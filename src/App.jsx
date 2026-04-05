@@ -269,8 +269,7 @@ export default function App(){
   async function fetchNugget(subj,top){
     setNuggetLoading(true);setNugget(null);setRevealed({});
     try{
-      const res=await fetch("/api/anthropic
-",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,system:`You are a pre-nursing school tutor for Ginger, a psychotherapist preparing to test out of prerequisite courses for an NP program starting September 2026. She is highly intelligent with a graduate-level psychology background but limited hard-science exposure. Return ONLY valid JSON, no markdown, no backticks.`,messages:[{role:"user",content:`Subject: ${subj.label}\nTopic: ${top}\n\nReturn JSON: {"topic":"${top}","nugget":"3-4 paragraph explanation","questions":[{"q":"conceptual question","a":"answer"},{"q":"clinical application question","a":"answer"},{"q":"multiple choice with 4 options, indicate correct","a":"answer with rationale"}]}`}]})});
+      const res=await fetch("/api/anthropic",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,system:`You are a pre-nursing school tutor for Ginger, a psychotherapist preparing to test out of prerequisite courses for an NP program starting September 2026. She is highly intelligent with a graduate-level psychology background but limited hard-science exposure. Return ONLY valid JSON, no markdown, no backticks.`,messages:[{role:"user",content:`Subject: ${subj.label}\nTopic: ${top}\n\nReturn JSON: {"topic":"${top}","nugget":"3-4 paragraph explanation","questions":[{"q":"conceptual question","a":"answer"},{"q":"clinical application question","a":"answer"},{"q":"multiple choice with 4 options, indicate correct","a":"answer with rationale"}]}`}]})});
       const data=await res.json();
       const raw=data.content?.find(b=>b.type==="text")?.text||"{}";
       setNugget(JSON.parse(raw.replace(/```json|```/g,"").trim()));
@@ -303,8 +302,7 @@ export default function App(){
     const group=FEED_GROUPS.find(g=>g.id===post.group)||FEED_GROUPS[0];
     setSummarizing(s=>({...s,[post.id]:true}));
     try{
-      const res=await fetch("/api/anthropic
-",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,system:group.systemPrompt,messages:[{role:"user",content:`${post.subreddit}\n${post.title}\n${post.selftext||""}`}]})});
+      const res=await fetch("/api/anthropic",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,system:group.systemPrompt,messages:[{role:"user",content:`${post.subreddit}\n${post.title}\n${post.selftext||""}`}]})});
       const data=await res.json();
       setSummaries(s=>({...s,[post.id]:data.content?.find(b=>b.type==="text")?.text||"Unable to summarize."}));
     }catch{setSummaries(s=>({...s,[post.id]:"Summary unavailable."}));}
