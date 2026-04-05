@@ -286,9 +286,9 @@ export default function App(){
     for(const sub of group.subs){
       try{
         const url=encodeURIComponent(`https://www.reddit.com/r/${sub}/new.json?limit=25`);
-        const res=await fetch(`https://api.allorigins.win/get?url=${url}`);
-        const json=await res.json();
-        const data=JSON.parse(json.contents);
+        const res=await fetch(`https://api.codetabs.com/v1/proxy?quest=${url}`);
+        
+        const data=await res.json();
         data.data.children.forEach(c=>{const p=c.data;all.push({id:p.id,title:p.title,subreddit:`r/${sub}`,score:p.score,comments:p.num_comments,created:p.created_utc,url:`https://reddit.com${p.permalink}`,selftext:p.selftext?.slice(0,500)||"",group:groupId});});
       }catch(e){}
     }
