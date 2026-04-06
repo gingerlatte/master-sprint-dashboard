@@ -818,7 +818,7 @@ ${sample}`}]
             {/* feed group switcher */}
             <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:"12px"}}>
               {FEED_GROUPS.map(g=>(
-                <div key={g.id} onClick={()=>{setActiveGroup(g.id);setIntelSub("all");setExpanded(null);if((posts[g.id]||[]).length===0)fetchGroup(g.id);}}
+                <div key={g.id} onClick={()=>{setActiveGroup(g.id);setIntelSub("all");setExpanded(null);if(g.id==="lmaw"){fetchGroup("lmaw");}else if((posts[g.id]||[]).length===0){fetchGroup(g.id);}}}
                   style={{
                     borderRadius:"16px",padding:"18px 20px",cursor:"pointer",
                     background:activeGroup===g.id?`linear-gradient(135deg,${g.color}25,${g.color}10)`:"rgba(255,255,255,0.55)",
@@ -863,14 +863,14 @@ ${sample}`}]
               </div>
 
               {/* LMAW Intelligence Layer */}
-              {activeGroup==="lmaw"&&(
+              {activeGroup==="lmaw"&&(posts.lmaw||[]).length>0&&(
                 <div style={{marginBottom:"16px",padding:"16px 18px",borderRadius:"14px",border:"1px solid #C4969F",background:"#FDF6F0"}}>
                   <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
                     <div>
                       <div style={{fontSize:"11px",letterSpacing:"2px",textTransform:"uppercase",color:"#C4969F",marginBottom:"3px"}}>✦ Pattern Intelligence</div>
                       <div style={{fontSize:"13px",color:"#3E2830"}}>Analyze emotional patterns across {(posts.lmaw||[]).length} posts</div>
                     </div>
-                    <button onClick={()=>{setIntelOpen(!intelOpen);if(!intelAnalysis&&!intelAnalyzing)analyzePatterns();}} style={{padding:"8px 20px",borderRadius:"100px",border:"1px solid #C4969F",background:"#C4969F",color:"white",fontSize:"12px",cursor:"pointer",fontFamily:"Georgia,serif"}}>
+                    <button onClick={()=>{const opening=!intelOpen;setIntelOpen(opening);if(opening)analyzePatterns();}} style={{padding:"8px 20px",borderRadius:"100px",border:"1px solid #C4969F",background:"#C4969F",color:"white",fontSize:"12px",cursor:"pointer",fontFamily:"Georgia,serif"}}>
                       {intelAnalyzing?"Analyzing…":intelOpen?"Hide":"✦ Analyze"}
                     </button>
                   </div>
