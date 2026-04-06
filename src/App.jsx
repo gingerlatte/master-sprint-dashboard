@@ -285,7 +285,7 @@ export default function App(){
     const all=[];
     for(const sub of group.subs){
       try{
-        const res=await fetch(`https://www.reddit.com/r/${sub}/new.json?limit=25&raw_json=1`,{headers:{"User-Agent":"NP-Dashboard/1.0"}});
+        const res=await fetch(`/api/reddit?sub=${sub}`);
         const data=await res.json();
         data.data.children.forEach(c=>{const p=c.data;all.push({id:p.id,title:p.title,subreddit:`r/${sub}`,score:p.score,comments:p.num_comments,created:p.created_utc,url:`https://reddit.com${p.permalink}`,selftext:p.selftext?.slice(0,500)||"",group:groupId});});
       }catch(e){}
