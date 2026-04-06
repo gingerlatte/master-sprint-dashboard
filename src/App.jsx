@@ -363,7 +363,7 @@ ${sample}`}]
       const data=await res.json();
       const raw=data.content?.find(b=>b.type==="text")?.text||"{}";
       try{
-        const cleaned=raw.replace(/```json/g,"").replace(/```/g,"").trim();      setIntelAnalysis(JSON.parse(cleaned));
+        const cleaned=raw.split("```json").join("").split("```").join("").trim();      setIntelAnalysis(JSON.parse(cleaned));
       }catch(e){
         const match=raw.match(/\{[\s\S]*\}/);
         if(match)setIntelAnalysis(JSON.parse(match[0]));
