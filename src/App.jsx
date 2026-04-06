@@ -341,34 +341,22 @@ export default function App(){
     if(lmawPosts.length===0)return;
     setIntelAnalyzing(true);
     setIntelAnalysis(null);
-    const sample=lmawPosts.slice(0,50).map(p=>`TITLE: ${p.title}\nBODY: ${p.selftext||""}`).join("\n---\n");
+    const titles=lmawPosts.slice(0,50).map(p=>p.title).join(" | ");
+    const prompt="Analyze these Reddit post titles from relationship healing subreddits: "+titles+". Return ONLY a raw JSON object (absolutely no markdown, no code fences) with this exact structure: {emotionalThemes:[{theme:string,count:number,example:string}],relationshipDynamics:[{dynamic:string,count:number,example:string}],cognitiveDistortions:[{distortion:string,count:number,example:string}],behavioralPatterns:[{pattern:string,count:number,example:string}],contentOpportunities:[{angle:string,why:string}],languageMirror:[string,string,string,string,string]}. Limit each array to 5 items.";
     try{
       const res=await fetch("/api/anthropic",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
         model:"claude-sonnet-4-20250514",max_tokens:1000,
-        system:`You are a clinical psychologist and content strategist analyzing Reddit posts for Ginger Dean, a licensed psychotherapist who runs "Loving Me After We" — a relationship healing brand focused on attachment wounds, love addiction, breakup recovery, and self-worth after toxic relationships. Her audience is women healing from painful relationships. Return ONLY valid JSON, no markdown.`,
-        messages:[{role:"user",content:`Analyze these ${lmawPosts.slice(0,50).length} Reddit posts from relationship healing subreddits. Return JSON with exactly this structure:
-{
-  "emotionalThemes": [{"theme": "string", "count": number, "example": "string"}],
-  "relationshipDynamics": [{"dynamic": "string", "count": number, "example": "string"}],
-  "cognitiveDistortions": [{"distortion": "string", "count": number, "example": "string"}],
-  "behavioralPatterns": [{"pattern": "string", "count": number, "example": "string"}],
-  "contentOpportunities": [{"angle": "string", "why": "string"}],
-  "languageMirror": ["exact phrase 1", "exact phrase 2", "exact phrase 3", "exact phrase 4", "exact phrase 5"]
-}
-Limit each array to top 5 items. Base counts on actual frequency in the posts.
-
-POSTS:
-${sample}`}]
+        system:"You are a clinical psychologist. Return ONLY raw JSON, no markdown, no backticks, no code fences.",
+        messages:[{role:"user",content:prompt}]
       })});
       const data=await res.json();
       const raw=data.content?.find(b=>b.type==="text")?.text||"{}";
-      try{
-        const cleaned=raw.split("```json").join("").split("```").join("").trim();      setIntelAnalysis(JSON.parse(cleaned));
-      }catch(e){
-        const match=raw.match(/\{[\s\S]*\}/);
-        if(match)setIntelAnalysis(JSON.parse(match[0]));
-        else setIntelAnalysis({error:true});
-      }
+      const start=raw.indexOf("{");
+      const end=raw.lastIndexOf("}");
+      if(start!==-1&&end!==-1){
+        try{setIntelAnalysis(JSON.parse(raw.slice(start,end+1)));}
+        catch{setIntelAnalysis({error:true});}
+      }else{setIntelAnalysis({error:true});}
     }catch(e){setIntelAnalysis({error:true});}
     setIntelAnalyzing(false);
   }
