@@ -286,26 +286,24 @@ export default function App(){
     for(const sub of group.subs){
       try{
         const res=await fetch(`/api/reddit?sub=${sub}`);
-        const text=await res.text();
-        const parser=new DOMParser();
-        const xml=parser.parseFromString(text,"application/xml");
-        const items=Array.from(xml.querySelectorAll("entry"));
-        items.forEach(item=>{
-          const title=item.querySelector("title")?.textContent||"";
-          const link=item.querySelector("link")?.getAttribute("href")||"";
-          const updated=item.querySelector("updated")?.textContent||"";
-          const content=item.querySelector("content")?.textContent||"";
-          const id=item.querySelector("id")?.textContent||Math.random().toString();
-          if(title){
-            all.push({
-              id,title,subreddit:`r/${sub}`,score:0,comments:0,
-              created:new Date(updated).getTime()/1000,
-              url:link,
-              selftext:content.replace(/<[^>]*>/g,"").slice(0,500),
-              group:groupId
-            });
-          }
-        });
+        const data=await res.json();
+        if(data&&data.posts){
+          data.posts.forEach(p=>{
+            if(p&&p.title){
+              all.push({
+                id:p.id||p.name||Math.random().toString(),
+                title:p.title,
+                subreddit:`r/${sub}`,
+                score:p.score||p.ups||0,
+                comments:p.num_comments||0,
+                created:p.created_utc||p.created||0,
+                url:p.url||`https://reddit.com${p.permalink||""}`,
+                selftext:(p.selftext||"").slice(0,500),
+                group:groupId
+              });
+            }
+          });
+        }
       }catch(e){console.error(sub,e);}
     }
     all.sort((a,b)=>b.created-a.created);
