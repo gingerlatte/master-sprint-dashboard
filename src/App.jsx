@@ -292,25 +292,27 @@ export default function App(){
     const all=[];
     for(const sub of group.subs){
       try{
-        const res=await fetch(`/api/reddit?sub=${sub}`);
+        const res=await fetch(`/api/reddit?subreddit=${sub}`);
         const data=await res.json();
-        if(data&&data.posts){
-          data.posts.forEach(p=>{
-            if(p&&p.title){
-              all.push({
-                id:p.id||p.name||Math.random().toString(),
-                title:p.title,
-                subreddit:`r/${sub}`,
-                score:p.score||p.ups||0,
-                comments:p.num_comments||0,
-                created:p.created_utc||p.created||0,
-                url:p.url||`https://reddit.com${p.permalink||""}`,
-                selftext:(p.selftext||"").slice(0,500),
-                group:groupId
-              });
-            }
-          });
-        }
+        const postsArray=
+          data.posts||
+          (data.data&&data.data.children?data.data.children.map(c=>c.data):null)||
+          [];
+        postsArray.forEach(p=>{
+          if(p&&p.title){
+            all.push({
+              id:p.id||p.name||Math.random().toString(),
+              title:p.title,
+              subreddit:`r/${sub}`,
+              score:p.score||p.ups||0,
+              comments:p.num_comments||0,
+              created:p.created_utc||p.created||0,
+              url:p.url||`https://reddit.com${p.permalink||""}`,
+              selftext:(p.selftext||"").slice(0,500),
+              group:groupId
+            });
+          }
+        });
       }catch(e){console.error(sub,e);}
     }
     all.sort((a,b)=>b.created-a.created);
@@ -332,7 +334,7 @@ export default function App(){
 
   const currentGroup=FEED_GROUPS.find(g=>g.id===activeGroup)||FEED_GROUPS[0];
   const groupPosts=posts[activeGroup]||[];
-  const displayPosts=(intelSub==="all"?groupPosts:groupPosts.filter(p=>p.subreddit===intelSub)).filter(p=>intelFilter==="all"||currentGroup.filter(p.title));
+  const displayPosts=intelSub==="all"?groupPosts:groupPosts.filter(p=>p.subreddit===intelSub);
   const card={background:"rgba(255,255,255,0.68)",borderRadius:"20px",border:`1px solid ${C.dusty}`,backdropFilter:"blur(10px)",boxShadow:`0 4px 24px ${C.blush}22`,padding:"26px 28px"};
   const pill=(active,color=C.rose)=>({padding:"5px 14px",borderRadius:"100px",fontSize:"11px",cursor:"pointer",border:`1px solid ${active?color:C.dusty}`,background:active?`${color}30`:"transparent",color:active?color:C.muted,transition:"all 0.2s",fontFamily:"Georgia,serif"});
 
