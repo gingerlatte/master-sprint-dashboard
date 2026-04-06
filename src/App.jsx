@@ -272,7 +272,14 @@ export default function App(){
       const res=await fetch("/api/anthropic",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,system:`You are a pre-nursing school tutor for Ginger, a psychotherapist preparing to test out of prerequisite courses for an NP program starting September 2026. She is highly intelligent with a graduate-level psychology background but limited hard-science exposure. Return ONLY valid JSON, no markdown, no backticks.`,messages:[{role:"user",content:`Subject: ${subj.label}\nTopic: ${top}\n\nReturn JSON: {"topic":"${top}","nugget":"3-4 paragraph explanation","questions":[{"q":"conceptual question","a":"answer"},{"q":"clinical application question","a":"answer"},{"q":"multiple choice with 4 options, indicate correct","a":"answer with rationale"}]}`}]})});
       const data=await res.json();
       const raw=data.content?.find(b=>b.type==="text")?.text||"{}";
-      setNugget(JSON.parse(raw.replace(/```json|```/g,"").trim()));
+      try{
+        const cleaned=raw.replace(/```json\n?|```\n?/g,"").trim();
+        setNugget(JSON.parse(cleaned));
+      }catch(e){
+        const match=raw.match(/\{[\s\S]*\}/);
+        if(match){try{setNugget(JSON.parse(match[0]));}catch{setNugget({error:true});}}
+        else{setNugget({error:true});}
+      }
       setStudyLog(prev=>[{subject:subj.label,topic:top,date:new Date().toLocaleDateString()},...prev].slice(0,20));
     }catch(e){setNugget({error:true});}
     setNuggetLoading(false);
