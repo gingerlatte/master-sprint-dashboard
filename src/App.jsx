@@ -206,6 +206,9 @@ export default function App(){
   const [summaries,setSummaries]=useState({});
   const [summarizing,setSummarizing]=useState({});
   const [priorityList,setPriorityList]=useState(()=>load(SK.plist,[]));
+  const [intelAnalysis,setIntelAnalysis]=useState(null);
+  const [intelAnalyzing,setIntelAnalyzing]=useState(false);
+  const [intelOpen,setIntelOpen]=useState(false);
   const [dragItem,setDragItem]=useState(null);
   const [dragOver,setDragOver]=useState(null);
 
@@ -331,6 +334,46 @@ export default function App(){
       setSummaries(s=>({...s,[post.id]:data.content?.find(b=>b.type==="text")?.text||"Unable to summarize."}));
     }catch{setSummaries(s=>({...s,[post.id]:"Summary unavailable."}));}
     setSummarizing(s=>({...s,[post.id]:false}));
+  }
+
+  async function analyzePatterns(){
+    const lmawPosts=posts.lmaw||[];
+    if(lmawPosts.length===0)return;
+    setIntelAnalyzing(true);
+    setIntelAnalysis(null);
+    const sample=lmawPosts.slice(0,50).map(p=>`TITLE: ${p.title}\nBODY: ${p.selftext||""}`).join("\n---\n");
+    try{
+      const res=await fetch("/api/anthropic",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
+        model:"claude-sonnet-4-20250514",max_tokens:1000,
+        system:`You are a clinical psychologist and content strategist analyzing Reddit posts for Ginger Dean, a licensed psychotherapist who runs "Loving Me After We" — a relationship healing brand focused on attachment wounds, love addiction, breakup recovery, and self-worth after toxic relationships. Her audience is women healing from painful relationships. Return ONLY valid JSON, no markdown.`,
+        messages:[{role:"user",content:`Analyze these ${lmawPosts.slice(0,50).length} Reddit posts from relationship healing subreddits. Return JSON with exactly this structure:
+{
+  "emotionalThemes": [{"theme": "string", "count": number, "example": "string"}],
+  "relationshipDynamics": [{"dynamic": "string", "count": number, "example": "string"}],
+  "cognitiveDistortions": [{"distortion": "string", "count": number, "example": "string"}],
+  "behavioralPatterns": [{"pattern": "string", "count": number, "example": "string"}],
+  "contentOpportunities": [{"angle": "string", "why": "string"}],
+  "languageMirror": ["exact phrase 1", "exact phrase 2", "exact phrase 3", "exact phrase 4", "exact phrase 5"]
+}
+Limit each array to top 5 items. Base counts on actual frequency in the posts.
+
+POSTS:
+${sample}`}]
+      })});
+      const data=await res.json();
+      const raw=data.content?.find(b=>b.type==="text")?.text||"{}";
+      try{
+        const cleaned=raw.replace(/\`\`\`json
+?|\`\`\`
+?/g,"").trim();
+        setIntelAnalysis(JSON.parse(cleaned));
+      }catch(e){
+        const match=raw.match(/\{[\s\S]*\}/);
+        if(match)setIntelAnalysis(JSON.parse(match[0]));
+        else setIntelAnalysis({error:true});
+      }
+    }catch(e){setIntelAnalysis({error:true});}
+    setIntelAnalyzing(false);
   }
 
   const currentGroup=FEED_GROUPS.find(g=>g.id===activeGroup)||FEED_GROUPS[0];
@@ -818,6 +861,83 @@ export default function App(){
                   </button>
                 ))}
               </div>
+
+              {/* LMAW Intelligence Layer */}
+              {activeGroup==="lmaw"&&(
+                <div style={{marginBottom:"16px",borderRadius:"14px",overflow:"hidden",border:`1px solid #C4969F50`,background:"linear-gradient(135deg,#FDF6F0,#FAF0F4)"}}>
+                  <div onClick={()=>{setIntelOpen(!intelOpen);if(!intelOpen&&!intelAnalysis&&!intelAnalyzing)analyzePatterns();}} style={{padding:"14px 18px",cursor:"pointer",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+                    <div>
+                      <div style={{fontSize:"11px",letterSpacing:"2px",textTransform:"uppercase",color:"#C4969F",marginBottom:"3px"}}>✦ Pattern Intelligence</div>
+                      <div style={{fontSize:"14px",color:"#3E2830",fontWeight:"500"}}>What your audience is really feeling</div>
+                    </div>
+                    <div style={{display:"flex",alignItems:"center",gap:"10px"}}>
+                      {(posts.lmaw||[]).length>0&&<span style={{fontSize:"10px",color:"#C4969F",background:"#C4969F18",padding:"3px 10px",borderRadius:"100px"}}>{(posts.lmaw||[]).length} posts analyzed</span>}
+                      <span style={{color:"#C4969F",fontSize:"18px"}}>{intelOpen?"▴":"▾"}</span>
+                    </div>
+                  </div>
+                  {intelOpen&&(
+                    <div style={{padding:"0 18px 18px",borderTop:"1px solid #C4969F20"}}>
+                      {intelAnalyzing&&(
+                        <div style={{textAlign:"center",padding:"30px",color:"#B8959E",fontStyle:"italic"}}>
+                          <div style={{fontSize:"22px",marginBottom:"8px"}}>✦</div>
+                          Analyzing emotional patterns across {(posts.lmaw||[]).length} posts…
+                        </div>
+                      )}
+                      {!intelAnalyzing&&!intelAnalysis&&(
+                        <div style={{textAlign:"center",padding:"20px"}}>
+                          <button onClick={analyzePatterns} style={{padding:"10px 24px",borderRadius:"100px",border:"1px solid #C4969F",background:"transparent",color:"#C4969F",fontSize:"12px",cursor:"pointer",fontFamily:"Georgia,serif"}}>
+                            ✦ Run Pattern Analysis
+                          </button>
+                          {(posts.lmaw||[]).length===0&&<div style={{marginTop:"10px",fontSize:"11px",color:"#B8959E",fontStyle:"italic"}}>Load LMAW & Growth posts first</div>}
+                        </div>
+                      )}
+                      {intelAnalysis&&!intelAnalysis.error&&(
+                        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"14px",marginTop:"14px"}}>
+                          {[
+                            {title:"💔 Emotional Themes",key:"emotionalThemes",field:"theme",color:"#D4849A"},
+                            {title:"🔄 Relationship Dynamics",key:"relationshipDynamics",field:"dynamic",color:"#C4969F"},
+                            {title:"🌀 Cognitive Distortions",key:"cognitiveDistortions",field:"distortion",color:"#A8C0D4"},
+                            {title:"⚡ Behavioral Patterns",key:"behavioralPatterns",field:"pattern",color:"#C9A96E"},
+                          ].map(({title,key,field,color})=>(
+                            <div key={key} style={{background:"white",borderRadius:"12px",padding:"14px",border:`1px solid ${color}30`}}>
+                              <div style={{fontSize:"12px",fontWeight:"600",color,marginBottom:"10px"}}>{title}</div>
+                              {(intelAnalysis[key]||[]).map((item,i)=>(
+                                <div key={i} style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",padding:"5px 0",borderBottom:"1px solid #F2C4CE20"}}>
+                                  <div style={{fontSize:"11px",color:"#3E2830",flex:1,lineHeight:1.4}}>{item[field]}</div>
+                                  <div style={{fontSize:"10px",color:color,background:`${color}15`,padding:"2px 7px",borderRadius:"100px",flexShrink:0,marginLeft:"6px"}}>{item.count}x</div>
+                                </div>
+                              ))}
+                            </div>
+                          ))}
+                          <div style={{gridColumn:"1/-1",background:"white",borderRadius:"12px",padding:"14px",border:"1px solid #A8C5A030"}}>
+                            <div style={{fontSize:"12px",fontWeight:"600",color:"#7A9E72",marginBottom:"10px"}}>🎯 Content Opportunities</div>
+                            {(intelAnalysis.contentOpportunities||[]).map((item,i)=>(
+                              <div key={i} style={{padding:"7px 0",borderBottom:"1px solid #A8C5A020"}}>
+                                <div style={{fontSize:"12px",color:"#3E2830",fontWeight:"500"}}>{item.angle}</div>
+                                <div style={{fontSize:"11px",color:"#7A5560",marginTop:"2px",fontStyle:"italic"}}>{item.why}</div>
+                              </div>
+                            ))}
+                          </div>
+                          <div style={{gridColumn:"1/-1",background:"linear-gradient(135deg,#FDF8EE,#FFF9F5)",borderRadius:"12px",padding:"14px",border:"1px solid #E8D5A830"}}>
+                            <div style={{fontSize:"12px",fontWeight:"600",color:"#C9A96E",marginBottom:"10px"}}>🪞 Language Mirror — Their Exact Words</div>
+                            <div style={{display:"flex",flexWrap:"wrap",gap:"8px"}}>
+                              {(intelAnalysis.languageMirror||[]).map((phrase,i)=>(
+                                <div key={i} style={{padding:"5px 12px",borderRadius:"100px",background:"#C9A96E18",border:"1px solid #C9A96E40",fontSize:"11px",color:"#9A7840",fontStyle:"italic"}}>"{phrase}"</div>
+                              ))}
+                            </div>
+                          </div>
+                          <div style={{gridColumn:"1/-1",textAlign:"right"}}>
+                            <button onClick={()=>{setIntelAnalysis(null);analyzePatterns();}} style={{fontSize:"10px",color:"#B8959E",background:"transparent",border:"1px solid #E8D5D0",borderRadius:"100px",padding:"4px 12px",cursor:"pointer",fontFamily:"Georgia,serif"}}>↻ Re-analyze</button>
+                          </div>
+                        </div>
+                      )}
+                      {intelAnalysis?.error&&(
+                        <div style={{textAlign:"center",padding:"20px",color:"#B8959E",fontStyle:"italic",fontSize:"12px"}}>Analysis failed. Try again.</div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
 
               {/* feed */}
               {intelLoading[activeGroup]?(
