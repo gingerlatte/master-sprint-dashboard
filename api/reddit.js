@@ -5,7 +5,7 @@ export default async function handler(req, res) {
 
   try {
     const response = await fetch(
-      `https://api.scrapecreators.com/v1/reddit/subreddit?handle=${sub}`,
+      `https://api.scrapecreators.com/v1/reddit/subreddit?subreddit=${sub}`,
       {
         headers: {
           'x-api-key': process.env.SCRAPECREATORS_API_KEY,
