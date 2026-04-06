@@ -836,7 +836,7 @@ export default function App(){
                     <div key={post.id} style={{borderRadius:"14px",overflow:"hidden",border:"1px solid #E8D5D0",background:"#FFFFFF",marginBottom:"2px"}}>
                       <div onClick={()=>{setExpanded(expanded===post.id?null:post.id);if(expanded!==post.id)summarizePost(post);}} style={{padding:"14px 16px",cursor:"pointer",background:"#FFFFFF"}}>
                         <div style={{display:"flex",justifyContent:"space-between",gap:"8px"}}>
-                          <div style={{fontSize:"13px",color:"#3E2830",lineHeight:"1.45",flex:1,wordBreak:"break-word"}}>{post.title}</div>
+                          <p style={{fontSize:"13px",color:"#3E2830",lineHeight:"1.45",flex:1,wordBreak:"break-word",margin:0,padding:0,fontFamily:"Georgia,serif",opacity:1,visibility:"visible"}}>{post.title}</p>
                           <span style={{color:"#D4849A",fontSize:"18px",flexShrink:0}}>{expanded===post.id?"−":"+"}</span>
                         </div>
                         <div style={{display:"flex",gap:"8px",marginTop:"7px",flexWrap:"wrap"}}>
