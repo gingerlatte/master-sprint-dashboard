@@ -890,10 +890,8 @@ export default function App(){
                   ))}
                 </div>
               )}
-            </div>
-          </div>
 
-            {/* LMAW Intelligence Layer - Outside Card */}
+            {/* LMAW Intelligence Layer */}
             {activeGroup==="lmaw"&&(posts.lmaw||[]).length>0&&(
               <div style={{marginTop:"16px",padding:"20px",borderRadius:"20px",border:"2px solid #C4969F",background:"#FDF6F0"}}>
                 <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:"4px"}}>
@@ -936,21 +934,20 @@ export default function App(){
                       ))}
                     </div>
                     <div style={{gridColumn:"1/-1",background:"#FFF9F0",borderRadius:"12px",padding:"14px",border:"1px solid #E8D5A840"}}>
-                      <div style={{fontSize:"12px",fontWeight:"600",color:"#C9A96E",marginBottom:"10px"}}>🪞 Language Mirror — Their Exact Words</div>
+                      <div style={{fontSize:"12px",fontWeight:"600",color:"#C9A96E",marginBottom:"10px"}}>🪞 Language Mirror</div>
                       <div style={{display:"flex",flexWrap:"wrap",gap:"8px"}}>
                         {(intelAnalysis.languageMirror||[]).map((phrase,i)=>(
                           <span key={i} style={{padding:"5px 12px",borderRadius:"100px",background:"#C9A96E18",border:"1px solid #C9A96E40",fontSize:"11px",color:"#9A7840",fontStyle:"italic"}}>"{phrase}"</span>
                         ))}
                       </div>
                     </div>
-                    <div style={{gridColumn:"1/-1",textAlign:"right"}}>
-                      <button onClick={()=>{setIntelAnalysis(null);analyzePatterns();}} style={{fontSize:"11px",color:"#B8959E",background:"transparent",border:"1px solid #E8D5D0",borderRadius:"100px",padding:"5px 14px",cursor:"pointer",fontFamily:"Georgia,serif"}}>↻ Re-analyze</button>
-                    </div>
                   </div>
                 )}
-                {intelAnalysis?.error&&<div style={{padding:"16px",color:"#B8959E",fontStyle:"italic",textAlign:"center"}}>Analysis failed. Try again.</div>}
+                {intelAnalysis&&intelAnalysis.error&&<div style={{padding:"16px",color:"#B8959E",fontStyle:"italic",textAlign:"center"}}>Analysis failed. Try again.</div>}
               </div>
             )}
+            </div>
+          </div>
         )}
 
         <div style={{textAlign:"center",marginTop:"48px",color:C.muted,fontSize:"11px",fontStyle:"italic",letterSpacing:"1px"}}>✦ &nbsp; Ginger's NP Journey &nbsp;·&nbsp; 2026</div>
