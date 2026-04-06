@@ -287,7 +287,14 @@ export default function App(){
       try{
         const res=await fetch(`/api/reddit?sub=${sub}`);
         const data=await res.json();
-        data.data.children.forEach(c=>{const p=c.data;all.push({id:p.id,title:p.title,subreddit:`r/${sub}`,score:p.score,comments:p.num_comments,created:p.created_utc,url:`https://reddit.com${p.permalink}`,selftext:p.selftext?.slice(0,500)||"",group:groupId});});
+        if(data&&data.data&&data.data.children){
+          data.data.children.forEach(c=>{
+            const p=c.data;
+            if(p&&p.title){
+              all.push({id:p.id||Math.random().toString(),title:p.title,subreddit:`r/${sub}`,score:p.score||0,comments:p.num_comments||0,created:p.created_utc||0,url:`https://reddit.com${p.permalink||""}`,selftext:(p.selftext||"").slice(0,500),group:groupId});
+            }
+          });
+        }
       }catch(e){}
     }
     all.sort((a,b)=>b.created-a.created);
