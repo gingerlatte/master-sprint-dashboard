@@ -830,17 +830,17 @@ export default function App(){
                     </div>
                   )}
                   {displayPosts.map(post=>(
-                    <div key={post.id} style={{borderRadius:"14px",overflow:"hidden",transition:"all 0.2s",border:`1px solid ${expanded===post.id?currentGroup.color:C.dusty}`,background:expanded===post.id?`${currentGroup.color}10`:"white"}}>
-                      <div onClick={()=>{setExpanded(expanded===post.id?null:post.id);if(expanded!==post.id)summarizePost(post);}} style={{padding:"14px 16px",cursor:"pointer"}}>
+                    <div key={post.id} style={{borderRadius:"14px",overflow:"hidden",border:"1px solid #E8D5D0",background:"#FFFFFF",marginBottom:"2px"}}>
+                      <div onClick={()=>{setExpanded(expanded===post.id?null:post.id);if(expanded!==post.id)summarizePost(post);}} style={{padding:"14px 16px",cursor:"pointer",background:"#FFFFFF"}}>
                         <div style={{display:"flex",justifyContent:"space-between",gap:"8px"}}>
-                          <div style={{fontSize:"13px",color:"#3E2830",lineHeight:1.45,flex:1,wordBreak:"break-word",opacity:1}}>{post.title}</div>
-                          <span style={{color:currentGroup.color,fontSize:"18px",flexShrink:0}}>{expanded===post.id?"−":"+"}</span>
+                          <div style={{fontSize:"13px",color:"#3E2830",lineHeight:"1.45",flex:1,wordBreak:"break-word"}}>{post.title}</div>
+                          <span style={{color:"#D4849A",fontSize:"18px",flexShrink:0}}>{expanded===post.id?"−":"+"}</span>
                         </div>
                         <div style={{display:"flex",gap:"8px",marginTop:"7px",flexWrap:"wrap"}}>
-                          <span style={{fontSize:"10px",padding:"2px 8px",borderRadius:"100px",background:`${currentGroup.color}18`,color:currentGroup.color}}>{post.subreddit}</span>
-                          <span style={{fontSize:"10px",color:C.muted}}>▲ {post.score}</span>
-                          <span style={{fontSize:"10px",color:C.muted}}>💬 {post.comments}</span>
-                          <span style={{fontSize:"10px",color:C.muted}}>{timeAgo(post.created)}</span>
+                          <span style={{fontSize:"10px",padding:"2px 8px",borderRadius:"100px",background:"#F2C4CE",color:"#B5637A"}}>{post.subreddit}</span>
+                          <span style={{fontSize:"10px",color:"#B8959E"}}>▲ {post.score}</span>
+                          <span style={{fontSize:"10px",color:"#B8959E"}}>💬 {post.comments}</span>
+                          <span style={{fontSize:"10px",color:"#B8959E"}}>{timeAgo(post.created)}</span>
                         </div>
                       </div>
                       {expanded===post.id&&(
