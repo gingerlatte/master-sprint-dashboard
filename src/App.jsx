@@ -864,7 +864,7 @@ ${sample}`}]
 
               {/* LMAW Intelligence Layer */}
               {activeGroup==="lmaw"&&(
-                <div style={{marginBottom:"16px",borderRadius:"14px",overflow:"hidden",border:`1px solid #C4969F50`,background:"linear-gradient(135deg,#FDF6F0,#FAF0F4)"}}>
+                <div style={{marginBottom:"16px",borderRadius:"14px",border:"1px solid #C4969F50",background:"linear-gradient(135deg,#FDF6F0,#FAF0F4)"}}>
                   <div onClick={()=>{setIntelOpen(!intelOpen);if(!intelOpen&&!intelAnalysis&&!intelAnalyzing)analyzePatterns();}} style={{padding:"14px 18px",cursor:"pointer",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
                     <div>
                       <div style={{fontSize:"11px",letterSpacing:"2px",textTransform:"uppercase",color:"#C4969F",marginBottom:"3px"}}>✦ Pattern Intelligence</div>
