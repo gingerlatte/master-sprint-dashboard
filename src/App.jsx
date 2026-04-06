@@ -345,8 +345,8 @@ export default function App(){
     const prompt="Here are "+lmawPosts.slice(0,30).length+" Reddit post titles from relationship healing communities: "+lmawPosts.slice(0,30).map(p=>p.title).join("; ")+". Analyze them and return a JSON object with these 6 keys: emotionalThemes (array of {theme,count,example}), relationshipDynamics (array of {dynamic,count,example}), cognitiveDistortions (array of {distortion,count,example}), behavioralPatterns (array of {pattern,count,example}), contentOpportunities (array of {angle,why}), languageMirror (array of 5 exact phrases from the posts). Max 5 items per array.";
     try{
       const res=await fetch("/api/anthropic",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
-        model:"claude-sonnet-4-20250514",max_tokens:1000,
-        system:"You are a clinical psychologist. Return ONLY raw JSON, no markdown, no backticks, no code fences.",
+        model:"claude-sonnet-4-20250514",max_tokens:2000,
+        system:"You are a clinical psychologist. Return ONLY raw JSON, no markdown, no backticks, no code fences. Keep responses very concise.",
         messages:[{role:"user",content:prompt}]
       })});
       const data=await res.json();
