@@ -833,7 +833,7 @@ export default function App(){
                     </div>
                   )}
                   {displayPosts.map(post=>(
-                    <div key={post.id} style={{borderRadius:"14px",overflow:"hidden",border:"1px solid #E8D5D0",background:"#FFFFFF",marginBottom:"2px"}}>
+                    <div key={post.id} style={{borderRadius:"14px",border:"1px solid #E8D5D0",background:"#FFFFFF",marginBottom:"8px"}}>
                       <div onClick={()=>{setExpanded(expanded===post.id?null:post.id);if(expanded!==post.id)summarizePost(post);}} style={{padding:"14px 16px",cursor:"pointer",background:"#FFFFFF"}}>
                         <div style={{display:"flex",justifyContent:"space-between",gap:"8px"}}>
                           <p style={{fontSize:"13px",color:"#3E2830",lineHeight:"1.45",flex:1,wordBreak:"break-word",margin:0,padding:0,fontFamily:"Georgia,serif",opacity:1,visibility:"visible"}}>{post.title}</p>
