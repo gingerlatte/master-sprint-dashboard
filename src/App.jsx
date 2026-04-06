@@ -276,7 +276,7 @@ export default function App(){
       const data=await res.json();
       const raw=data.content?.find(b=>b.type==="text")?.text||"{}";
       try{
-        const cleaned=raw.replace(/```json\n?|```\n?/g,"").trim();
+        const cleaned=raw.split("```json").join("").split("```").join("").trim();
         setNugget(JSON.parse(cleaned));
       }catch(e){
         const match=raw.match(/\{[\s\S]*\}/);
