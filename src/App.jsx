@@ -342,7 +342,7 @@ export default function App(){
     setIntelAnalyzing(true);
     setIntelAnalysis(null);
     const titles=lmawPosts.slice(0,50).map(p=>p.title).join(" | ");
-    const prompt="Analyze these Reddit post titles from relationship healing subreddits: "+titles+". Return ONLY a raw JSON object (absolutely no markdown, no code fences) with this exact structure: {emotionalThemes:[{theme:string,count:number,example:string}],relationshipDynamics:[{dynamic:string,count:number,example:string}],cognitiveDistortions:[{distortion:string,count:number,example:string}],behavioralPatterns:[{pattern:string,count:number,example:string}],contentOpportunities:[{angle:string,why:string}],languageMirror:[string,string,string,string,string]}. Limit each array to 5 items.";
+    const prompt="Here are "+lmawPosts.slice(0,30).length+" Reddit post titles from relationship healing communities: "+lmawPosts.slice(0,30).map(p=>p.title).join("; ")+". Analyze them and return a JSON object with these 6 keys: emotionalThemes (array of {theme,count,example}), relationshipDynamics (array of {dynamic,count,example}), cognitiveDistortions (array of {distortion,count,example}), behavioralPatterns (array of {pattern,count,example}), contentOpportunities (array of {angle,why}), languageMirror (array of 5 exact phrases from the posts). Max 5 items per array.";
     try{
       const res=await fetch("/api/anthropic",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
         model:"claude-sonnet-4-20250514",max_tokens:1000,
@@ -899,7 +899,7 @@ export default function App(){
                     <div style={{fontSize:"11px",letterSpacing:"2px",textTransform:"uppercase",color:"#C4969F",marginBottom:"3px"}}>✦ Pattern Intelligence</div>
                     <div style={{fontSize:"14px",color:"#3E2830",fontWeight:"500"}}>Analyze {(posts.lmaw||[]).length} posts for emotional patterns</div>
                   </div>
-                  <button onClick={()=>{const opening=!intelOpen;setIntelOpen(opening);if(opening)analyzePatterns();}} style={{padding:"10px 24px",borderRadius:"100px",border:"none",background:"#C4969F",color:"white",fontSize:"13px",cursor:"pointer",fontFamily:"Georgia,serif",fontWeight:"500"}}>
+                  <button onClick={()=>{if(intelOpen){setIntelOpen(false);}else{setIntelOpen(true);analyzePatterns();}}} style={{padding:"10px 24px",borderRadius:"100px",border:"none",background:"#C4969F",color:"white",fontSize:"13px",cursor:"pointer",fontFamily:"Georgia,serif",fontWeight:"500"}}>
                     {intelAnalyzing?"Analyzing…":intelOpen?"▴ Hide":"✦ Analyze"}
                   </button>
                 </div>
