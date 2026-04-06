@@ -296,7 +296,8 @@ export default function App(){
         const data=await res.json();
         const postsArray=
           data.posts||
-          (data.data&&data.data.children?data.data.children.map(c=>c.data):null)||
+          data.data?.posts||
+          (data.data?.children?data.data.children.map(c=>c.data):null)||
           [];
         postsArray.forEach(p=>{
           if(p&&p.title){
