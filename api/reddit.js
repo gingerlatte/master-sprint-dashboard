@@ -8,7 +8,9 @@ export default async function handler(req, res) {
       { headers: { 'x-api-key': process.env.SCRAPECREATORS_API_KEY } }
     );
     const data = await response.json();
-    return res.status(200).json(data);
+    const posts = data.posts || data.data?.posts || 
+      (data.data?.children ? data.data.children.map(c=>c.data) : []) || [];
+    return res.status(200).json({ posts });
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
