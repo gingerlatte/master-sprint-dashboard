@@ -800,17 +800,17 @@ export default function App(){
                   Scanning {currentGroup.label}…
                 </div>
               ):(
-                <div style={{display:"flex",flexDirection:"column",gap:"10px",maxHeight:"560px",overflowY:"auto",paddingRight:"4px"}}>
+                <div style={{display:"flex",flexDirection:"column",gap:"10px",maxHeight:"560px",overflowY:"auto",paddingRight:"4px",background:"transparent"}}>
                   {displayPosts.length===0&&(
                     <div style={{textAlign:"center",padding:"40px",color:C.muted,fontStyle:"italic"}}>
                       No posts found. Try refreshing or switching to "All Posts."
                     </div>
                   )}
                   {displayPosts.map(post=>(
-                    <div key={post.id} style={{borderRadius:"14px",overflow:"hidden",transition:"all 0.2s",border:`1px solid ${expanded===post.id?currentGroup.color:C.dusty}`,background:expanded===post.id?`${currentGroup.color}10`:"rgba(255,255,255,0.5)"}}>
+                    <div key={post.id} style={{borderRadius:"14px",overflow:"hidden",transition:"all 0.2s",border:`1px solid ${expanded===post.id?currentGroup.color:C.dusty}`,background:expanded===post.id?`${currentGroup.color}10`:"white"}}>
                       <div onClick={()=>{setExpanded(expanded===post.id?null:post.id);if(expanded!==post.id)summarizePost(post);}} style={{padding:"14px 16px",cursor:"pointer"}}>
                         <div style={{display:"flex",justifyContent:"space-between",gap:"8px"}}>
-                          <div style={{fontSize:"13px",color:C.text,lineHeight:1.45,flex:1}}>{post.title}</div>
+                          <div style={{fontSize:"13px",color:"#3E2830",lineHeight:1.45,flex:1,wordBreak:"break-word"}}>{post.title}</div>
                           <span style={{color:currentGroup.color,fontSize:"18px",flexShrink:0}}>{expanded===post.id?"−":"+"}</span>
                         </div>
                         <div style={{display:"flex",gap:"8px",marginTop:"7px",flexWrap:"wrap"}}>
