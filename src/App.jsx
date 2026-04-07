@@ -145,7 +145,7 @@ const FEED_GROUPS=[
   {
     id:"lmaw", label:"LMAW & Growth", icon:"✦",
     color:"#C4969F",
-    subs:["crappychildhoodfairy","personaldev","selfimprovement","relationshipadvice","healing","attachment","emotionalabuse","codependency","narcissisticabuse"],
+    subs:["crappychildhoodfairy","personaldev","selfimprovement","relationshipadvice","healing","attachment","emotionalabuse","codependency","narcissisticabuse","LifeAfterNarcissism","NarcissisticSpouses","BreakUps"],
     filter:isLmawRelevant,
     description:"Content intelligence for Loving Me After We — what your audience is feeling, asking, and struggling with right now.",
     systemPrompt:`Content strategist for Ginger, a psychotherapist and creator of "Loving Me After We" — a relationship healing brand focused on attachment, love addiction, breakup recovery, and self-worth after toxic relationships. Her audience is women healing from relationships. Summarize this post in 2 sentences, then give 2-3 "Content angles for Ginger" bullets — specific ideas for carousels, captions, or Inner Circle content she could create from this.`
