@@ -50,6 +50,7 @@ const STAGES=[
       {id:"s1g",text:"DEA requirements clarified for NPs",done:false,subs:["Confirm ADHD prescribing rules per state","Understand controlled substance protocols","Document for onboarding"]},
       {id:"s1h",text:"Multi-state licensure",done:false,subs:["Maine — applied ✅ awaiting approval","Vermont — application submitted","West Virginia — application submitted","Research additional high-value states"]},
       {id:"s1i",text:"Practice website live",done:true,subs:["Website published ✅","Update for integrated practice messaging","Add NP services section"]},
+      {id:"s1j",text:"Interview NP practice owners",done:false,subs:["Book consultation with practice owner #1","Book consultation with practice owner #2","Book consultation with practice owner #3","Ask about hiring challenges","Ask about NP compensation structure","Ask about billing + ops setup","Ask about what they'd do differently"]},
     ]
   },
   {
@@ -759,7 +760,7 @@ export default function App(){
                                       {item.done&&<span style={{color:"white",fontSize:"9px"}}>✓</span>}
                                     </div>
                                     <div style={{flex:1}}>
-                                      <div style={{fontSize:"12px",color:item.done?C.muted:C.text,textDecoration:item.done?"line-through":"none",lineHeight:1.4}}>{item.text}</div>
+                                      <input value={item.text} onChange={e=>setStages(p=>p.map(s=>s.id!==stage.id?s:{...s,items:s.items.map(i=>i.id!==item.id?i:{...i,text:e.target.value})}))} style={{fontSize:"12px",color:item.done?C.muted:C.text,textDecoration:item.done?"line-through":"none",lineHeight:1.4,border:"none",background:"transparent",fontFamily:"Georgia,serif",outline:"none",width:"100%",padding:0}}/>
                                       {subsArr.length>0&&<div style={{fontSize:"10px",color:C.muted,marginTop:"2px"}}>{subsDone}/{subsArr.length} steps</div>}
                                     </div>
                                     <div style={{display:"flex",gap:"4px",flexShrink:0}}>
@@ -786,6 +787,10 @@ export default function App(){
                               );
                             })}
                           </div>
+                          <button onClick={()=>{
+                            const newId=`${stage.id}_custom_${Date.now()}`;
+                            setStages(p=>p.map(s=>s.id!==stage.id?s:{...s,items:[...s.items,{id:newId,text:"",done:false,subs:[]}]}));
+                          }} style={{marginTop:"8px",width:"100%",padding:"6px",borderRadius:"8px",border:`1px dashed ${color}60`,background:"transparent",color,fontSize:"11px",cursor:"pointer",fontFamily:"Georgia,serif"}}>+ Add task</button>
                         </td>
                       );
                     })}
