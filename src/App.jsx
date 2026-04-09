@@ -234,10 +234,14 @@ export default function App(){
   const [summaries,setSummaries]=useState({});
   const [summarizing,setSummarizing]=useState({});
   const [priorityList,setPriorityList]=useState(()=>load(SK.plist,[]));
+  const [todayList,setTodayList]=useState(()=>load("g_today",[""]));
+  const [masterList,setMasterList]=useState(()=>load("g_master",[""]));
   const [intelAnalysis,setIntelAnalysis]=useState(null);
   const [intelAnalyzing,setIntelAnalyzing]=useState(false);
   const [intelOpen,setIntelOpen]=useState(false);
   const [dragItem,setDragItem]=useState(null);
+  const [catDragItem,setCatDragItem]=useState(null);
+  const [catDragOver,setCatDragOver]=useState(null);
   const [dragOver,setDragOver]=useState(null);
 
   useEffect(()=>{const h=now.getHours();setGreeting(h<12?"Good morning":h<17?"Good afternoon":"Good evening");},[]);
@@ -248,6 +252,8 @@ export default function App(){
   useEffect(()=>{save(SK.intention,intention);},[intention]);
   useEffect(()=>{save(SK.studylog,studyLog);},[studyLog]);
   useEffect(()=>{save(SK.plist,priorityList);},[priorityList]);
+  useEffect(()=>{save("g_today",todayList);},[todayList]);
+  useEffect(()=>{save("g_master",masterList);},[masterList]);
   useEffect(()=>{if(tab==="intel"&&posts.pmhnp.length===0)fetchGroup("pmhnp");},[tab]);
 
   // stage helpers
@@ -442,11 +448,26 @@ export default function App(){
               ))}
             </div>
 
-            <div style={{display:"grid",gridTemplateColumns:"1.3fr 1fr",gap:"18px"}}>
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:"14px"}}>
+              {/* TODAY */}
               <div style={card}>
-                <div style={{fontSize:"11px",letterSpacing:"2px",textTransform:"uppercase",color:C.rose,marginBottom:"5px"}}>This Week</div>
-                <h3 style={{margin:"0 0 4px",fontSize:"17px",fontWeight:"400",color:C.text}}>Priorities</h3>
-                <p style={{margin:"0 0 14px",fontSize:"11px",color:C.muted,fontStyle:"italic"}}>Type to edit · Drag ⠿ to reorder · + to add</p>
+                <div style={{fontSize:"11px",letterSpacing:"2px",textTransform:"uppercase",color:C.deep,marginBottom:"5px"}}>🔴 Today</div>
+                <p style={{margin:"0 0 12px",fontSize:"11px",color:C.muted,fontStyle:"italic"}}>What I'm doing right now</p>
+                <div style={{display:"flex",flexDirection:"column",gap:"7px"}}>
+                  {(todayList||[]).map((p,i)=>(
+                    <div key={i} style={{display:"flex",alignItems:"center",gap:"8px",padding:"7px 10px",borderRadius:"10px",background:"rgba(255,255,255,0.6)",border:`1px solid ${C.dusty}`}}>
+                      <input value={p} placeholder={`Today ${i+1}…`} onChange={e=>{const n=[...todayList];n[i]=e.target.value;setTodayList(n);}} style={{flex:1,border:"none",background:"transparent",fontSize:"13px",color:p?C.text:C.muted,fontFamily:"Georgia,serif",outline:"none"}}/>
+                      <button onClick={()=>setTodayList(todayList.filter((_,idx)=>idx!==i))} style={{background:"transparent",border:"none",color:C.muted,fontSize:"15px",cursor:"pointer",opacity:todayList.length===1?0.2:1}}>×</button>
+                    </div>
+                  ))}
+                </div>
+                <button onClick={()=>setTodayList(p=>[...p,""])} style={{marginTop:"10px",width:"100%",padding:"7px",borderRadius:"10px",border:`1px dashed ${C.deep}`,background:"transparent",color:C.deep,fontSize:"12px",cursor:"pointer",fontFamily:"Georgia,serif"}}>+ Add</button>
+              </div>
+
+              {/* THIS WEEK */}
+              <div style={card}>
+                <div style={{fontSize:"11px",letterSpacing:"2px",textTransform:"uppercase",color:C.rose,marginBottom:"5px"}}>📅 This Week</div>
+                <p style={{margin:"0 0 12px",fontSize:"11px",color:C.muted,fontStyle:"italic"}}>Short horizon · drag ⠿ to reorder</p>
                 <div style={{display:"flex",flexDirection:"column",gap:"7px"}}>
                   {priorities.map((p,i)=>(
                     <div key={i} draggable
@@ -454,31 +475,44 @@ export default function App(){
                       onDragOver={e=>{e.preventDefault();setPriDragOver(i);}}
                       onDrop={e=>{e.preventDefault();if(priDrag===null||priDrag===i)return;const next=[...priorities];const[moved]=next.splice(priDrag,1);next.splice(i,0,moved);setPri(next);setPriDrag(null);setPriDragOver(null);}}
                       onDragEnd={()=>{setPriDrag(null);setPriDragOver(null);}}
-                      style={{display:"flex",alignItems:"center",gap:"8px",padding:"8px 10px",borderRadius:"10px",background:priDragOver===i?`${C.blush}30`:"rgba(255,255,255,0.6)",border:`1px solid ${priDragOver===i?C.rose:C.dusty}`,transition:"all 0.15s"}}>
-                      <span style={{color:C.muted,fontSize:"14px",cursor:"grab",flexShrink:0}}>⠿</span>
-                      <div style={{width:"20px",height:"20px",borderRadius:"50%",flexShrink:0,background:i<3?[C.deep,C.mauve,C.gold][i]:C.taupe,display:"flex",alignItems:"center",justifyContent:"center",fontSize:"10px",color:"white",fontWeight:"600"}}>{i+1}</div>
-                      <input value={p} placeholder={`Priority ${i+1}…`} onChange={e=>{const n=[...priorities];n[i]=e.target.value;setPri(n);}} style={{flex:1,border:"none",background:"transparent",fontSize:"13px",color:p?C.text:C.muted,fontFamily:"Georgia,serif",outline:"none",padding:"2px 0"}}/>
-                      <button onClick={()=>setPri(priorities.filter((_,idx)=>idx!==i))} style={{background:"transparent",border:"none",color:C.muted,fontSize:"15px",cursor:"pointer",padding:"0 2px",opacity:priorities.length===1?0.2:1}}>×</button>
+                      style={{display:"flex",alignItems:"center",gap:"8px",padding:"7px 10px",borderRadius:"10px",background:priDragOver===i?`${C.blush}30`:"rgba(255,255,255,0.6)",border:`1px solid ${priDragOver===i?C.rose:C.dusty}`}}>
+                      <span style={{color:C.muted,fontSize:"14px",cursor:"grab"}}>⠿</span>
+                      <input value={p} placeholder={`Priority ${i+1}…`} onChange={e=>{const n=[...priorities];n[i]=e.target.value;setPri(n);}} style={{flex:1,border:"none",background:"transparent",fontSize:"13px",color:p?C.text:C.muted,fontFamily:"Georgia,serif",outline:"none"}}/>
+                      <button onClick={()=>setPri(priorities.filter((_,idx)=>idx!==i))} style={{background:"transparent",border:"none",color:C.muted,fontSize:"15px",cursor:"pointer",opacity:priorities.length===1?0.2:1}}>×</button>
                     </div>
                   ))}
                 </div>
-                <button onClick={()=>setPri(p=>[...p,""])} style={{marginTop:"10px",width:"100%",padding:"7px",borderRadius:"10px",border:`1px dashed ${C.rose}`,background:"transparent",color:C.rose,fontSize:"12px",cursor:"pointer",fontFamily:"Georgia,serif"}}>+ Add priority</button>
+                <button onClick={()=>setPri(p=>[...p,""])} style={{marginTop:"10px",width:"100%",padding:"7px",borderRadius:"10px",border:`1px dashed ${C.rose}`,background:"transparent",color:C.rose,fontSize:"12px",cursor:"pointer",fontFamily:"Georgia,serif"}}>+ Add</button>
               </div>
-              <div style={{...card,background:`linear-gradient(135deg,#FDF8EE,${C.warm})`,border:`1px solid ${C.goldL}`}}>
-                <div style={{fontSize:"11px",letterSpacing:"2px",textTransform:"uppercase",color:C.gold,marginBottom:"5px"}}>◈ Intention</div>
-                <h3 style={{margin:"0 0 14px",fontSize:"17px",fontWeight:"400",color:C.text}}>This Week I Am…</h3>
-                <textarea value={intention} placeholder="A word, a phrase, a feeling…" onChange={e=>setInt(e.target.value)} style={{width:"100%",minHeight:"120px",padding:"12px",borderRadius:"12px",border:`1px solid ${C.goldL}`,background:"rgba(255,255,255,0.55)",fontSize:"14px",color:C.text,fontFamily:"Georgia,serif",resize:"none",outline:"none",lineHeight:1.7,boxSizing:"border-box"}}/>
+
+              {/* MASTER LIST */}
+              <div style={card}>
+                <div style={{fontSize:"11px",letterSpacing:"2px",textTransform:"uppercase",color:C.gold,marginBottom:"5px"}}>📋 Master List</div>
+                <p style={{margin:"0 0 12px",fontSize:"11px",color:C.muted,fontStyle:"italic"}}>Running capture — everything</p>
+                <div style={{display:"flex",flexDirection:"column",gap:"7px",maxHeight:"220px",overflowY:"auto"}}>
+                  {(masterList||[]).map((p,i)=>(
+                    <div key={i} style={{display:"flex",alignItems:"center",gap:"8px",padding:"7px 10px",borderRadius:"10px",background:"rgba(255,255,255,0.6)",border:`1px solid ${C.dusty}`}}>
+                      <input value={p} placeholder="Add item…" onChange={e=>{const n=[...masterList];n[i]=e.target.value;setMasterList(n);}} style={{flex:1,border:"none",background:"transparent",fontSize:"13px",color:p?C.text:C.muted,fontFamily:"Georgia,serif",outline:"none"}}/>
+                      <button onClick={()=>setMasterList(masterList.filter((_,idx)=>idx!==i))} style={{background:"transparent",border:"none",color:C.muted,fontSize:"15px",cursor:"pointer"}}>×</button>
+                    </div>
+                  ))}
+                </div>
+                <button onClick={()=>setMasterList(p=>[...p,""])} style={{marginTop:"10px",width:"100%",padding:"7px",borderRadius:"10px",border:`1px dashed ${C.gold}`,background:"transparent",color:C.gold,fontSize:"12px",cursor:"pointer",fontFamily:"Georgia,serif"}}>+ Add</button>
               </div>
             </div>
-
             <div>
               <div style={{fontSize:"11px",letterSpacing:"2px",textTransform:"uppercase",color:C.muted,marginBottom:"14px"}}>Life Areas · Click ▾ to expand & edit sub-steps</div>
               <div style={{display:"flex",gap:"14px",overflowX:"auto",paddingBottom:"8px",alignItems:"flex-start"}}>
-                {missionTodos.map(cat=>{
+                {missionTodos.map((cat,catIdx)=>{
                   const catDone=cat.items.filter(i=>i.done).length;
                   const color=cat.color;
                   return(
-                    <div key={cat.id} style={{minWidth:"230px",flex:"0 0 230px",borderRadius:"18px",background:`linear-gradient(160deg,white,${color}10)`,border:`1px solid ${color}35`,boxShadow:`0 4px 16px ${color}18`,padding:"18px"}}>
+                    <div key={cat.id} draggable
+                      onDragStart={()=>setCatDragItem(catIdx)}
+                      onDragOver={e=>{e.preventDefault();setCatDragOver(catIdx);}}
+                      onDrop={e=>{e.preventDefault();if(catDragItem===null||catDragItem===catIdx)return;const next=[...missionTodos];const[moved]=next.splice(catDragItem,1);next.splice(catIdx,0,moved);setMissionTodos(next);setCatDragItem(null);setCatDragOver(null);}}
+                      onDragEnd={()=>{setCatDragItem(null);setCatDragOver(null);}}
+                      style={{minWidth:"230px",flex:"0 0 230px",borderRadius:"18px",background:`linear-gradient(160deg,white,${color}10)`,border:`2px solid ${catDragOver===catIdx?color:color+"35"}`,boxShadow:`0 4px 16px ${color}18`,padding:"18px",cursor:"grab",opacity:catDragItem===catIdx?0.5:1}}>
                       <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:"14px"}}>
                         <div><div style={{fontSize:"16px",marginBottom:"2px"}}>{cat.icon}</div><div style={{fontSize:"12px",fontWeight:"600",color}}>{cat.label}</div></div>
                         <div style={{width:"34px",height:"34px",borderRadius:"50%",background:`conic-gradient(${color} ${(catDone/Math.max(cat.items.length,1))*360}deg,${color}20 0deg)`,display:"flex",alignItems:"center",justifyContent:"center",boxShadow:"0 0 0 2px white"}}>
