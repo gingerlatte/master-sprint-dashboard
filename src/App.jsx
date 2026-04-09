@@ -232,8 +232,8 @@ export default function App(){
   const [summaries,setSummaries]=useState({});
   const [summarizing,setSummarizing]=useState({});
   const [priorityList,setPriorityList]=useState(()=>load(SK.plist,[]));
-  const [todayList,setTodayList]=useState(()=>load("g_today",[{text:"",done:false}]));
-  const [masterList,setMasterList]=useState(()=>load("g_master",[{text:"",done:false}]));
+  const [todayList,setTodayList]=useState(()=>load("g_today",[""]));
+  const [masterList,setMasterList]=useState(()=>load("g_master",[""]));
   const [intelAnalysis,setIntelAnalysis]=useState(null);
   const [intelAnalyzing,setIntelAnalyzing]=useState(false);
   const [intelOpen,setIntelOpen]=useState(false);
@@ -453,20 +453,13 @@ export default function App(){
                 <p style={{margin:"0 0 12px",fontSize:"11px",color:C.muted,fontStyle:"italic"}}>What I'm doing right now</p>
                 <div style={{display:"flex",flexDirection:"column",gap:"7px"}}>
                   {(todayList||[]).map((p,i)=>(
-                    <div key={i} style={{display:"flex",alignItems:"center",gap:"8px",padding:"7px 10px",borderRadius:"10px",background:p.done?"rgba(0,0,0,0.03)":"rgba(255,255,255,0.6)",border:`1px solid ${p.done?C.taupe:C.dusty}`}}>
-                      <div onClick={()=>{const n=[...todayList];n[i]={...n[i],done:!n[i].done};setTodayList(n);}} style={{width:"16px",height:"16px",borderRadius:"50%",flexShrink:0,border:`2px solid ${p.done?C.deep:C.taupe}`,background:p.done?C.deep:"transparent",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>
-                        {p.done&&<span style={{color:"white",fontSize:"9px"}}>✓</span>}
-                      </div>
-                      <input value={p.text||""} placeholder="Today item…" onChange={e=>{const n=[...todayList];n[i]={...n[i],text:e.target.value};setTodayList(n);}} style={{flex:1,border:"none",background:"transparent",fontSize:"13px",color:p.done?C.muted:C.text,fontFamily:"Georgia,serif",outline:"none",textDecoration:p.done?"line-through":"none"}}/>
-                      <select onChange={e=>{if(e.target.value){const item={id:`moved_${Date.now()}`,text:p.text||"",done:false,subs:[]};setMissionTodos(prev=>prev.map(c=>c.id!==e.target.value?c:{...c,items:[...c.items,item]}));setTodayList(todayList.filter((_,idx)=>idx!==i));e.target.value="";}}} style={{fontSize:"10px",color:C.muted,border:`1px solid ${C.dusty}`,borderRadius:"6px",background:"white",cursor:"pointer",padding:"2px 4px"}} defaultValue="">
-                        <option value="">↓ move</option>
-                        {missionTodos.map(c=><option key={c.id} value={c.id}>{c.label}</option>)}
-                      </select>
-                      <button onClick={()=>setTodayList(todayList.filter((_,idx)=>idx!==i))} style={{background:"transparent",border:"none",color:C.muted,fontSize:"15px",cursor:"pointer"}}>×</button>
+                    <div key={i} style={{display:"flex",alignItems:"center",gap:"8px",padding:"7px 10px",borderRadius:"10px",background:"rgba(255,255,255,0.6)",border:`1px solid ${C.dusty}`}}>
+                      <input value={p} placeholder={`Today ${i+1}…`} onChange={e=>{const n=[...todayList];n[i]=e.target.value;setTodayList(n);}} style={{flex:1,border:"none",background:"transparent",fontSize:"13px",color:p?C.text:C.muted,fontFamily:"Georgia,serif",outline:"none"}}/>
+                      <button onClick={()=>setTodayList(todayList.filter((_,idx)=>idx!==i))} style={{background:"transparent",border:"none",color:C.muted,fontSize:"15px",cursor:"pointer",opacity:todayList.length===1?0.2:1}}>×</button>
                     </div>
                   ))}
                 </div>
-                <button onClick={()=>setTodayList(p=>[...p,{text:"",done:false}])} style={{marginTop:"10px",width:"100%",padding:"7px",borderRadius:"10px",border:`1px dashed ${C.deep}`,background:"transparent",color:C.deep,fontSize:"12px",cursor:"pointer",fontFamily:"Georgia,serif"}}>+ Add</button>
+                <button onClick={()=>setTodayList(p=>[...p,""])} style={{marginTop:"10px",width:"100%",padding:"7px",borderRadius:"10px",border:`1px dashed ${C.deep}`,background:"transparent",color:C.deep,fontSize:"12px",cursor:"pointer",fontFamily:"Georgia,serif"}}>+ Add</button>
               </div>
 
               {/* THIS WEEK */}
@@ -474,28 +467,18 @@ export default function App(){
                 <div style={{fontSize:"11px",letterSpacing:"2px",textTransform:"uppercase",color:C.rose,marginBottom:"5px"}}>📅 This Week</div>
                 <p style={{margin:"0 0 12px",fontSize:"11px",color:C.muted,fontStyle:"italic"}}>Short horizon · drag ⠿ to reorder</p>
                 <div style={{display:"flex",flexDirection:"column",gap:"7px"}}>
-                  {priorities.map((p,i)=>{
-                    const txt=typeof p==="object"?p.text:p;
-                    const done=typeof p==="object"?p.done:false;
-                    return(
+                  {priorities.map((p,i)=>(
                     <div key={i} draggable
                       onDragStart={e=>{e.dataTransfer.effectAllowed="move";setPriDrag(i);}}
                       onDragOver={e=>{e.preventDefault();setPriDragOver(i);}}
                       onDrop={e=>{e.preventDefault();if(priDrag===null||priDrag===i)return;const next=[...priorities];const[moved]=next.splice(priDrag,1);next.splice(i,0,moved);setPri(next);setPriDrag(null);setPriDragOver(null);}}
                       onDragEnd={()=>{setPriDrag(null);setPriDragOver(null);}}
-                      style={{display:"flex",alignItems:"center",gap:"8px",padding:"7px 10px",borderRadius:"10px",background:done?"rgba(0,0,0,0.03)":priDragOver===i?`${C.blush}30`:"rgba(255,255,255,0.6)",border:`1px solid ${done?C.taupe:priDragOver===i?C.rose:C.dusty}`}}>
+                      style={{display:"flex",alignItems:"center",gap:"8px",padding:"7px 10px",borderRadius:"10px",background:priDragOver===i?`${C.blush}30`:"rgba(255,255,255,0.6)",border:`1px solid ${priDragOver===i?C.rose:C.dusty}`}}>
                       <span style={{color:C.muted,fontSize:"14px",cursor:"grab"}}>⠿</span>
-                      <div onClick={()=>{const n=[...priorities];n[i]=typeof n[i]==="object"?{...n[i],done:!n[i].done}:{text:n[i],done:true};setPri(n);}} style={{width:"16px",height:"16px",borderRadius:"50%",flexShrink:0,border:`2px solid ${done?C.rose:C.taupe}`,background:done?C.rose:"transparent",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>
-                        {done&&<span style={{color:"white",fontSize:"9px"}}>✓</span>}
-                      </div>
-                      <input value={txt} placeholder={`Priority ${i+1}…`} onChange={e=>{const n=[...priorities];n[i]=typeof n[i]==="object"?{...n[i],text:e.target.value}:e.target.value;setPri(n);}} style={{flex:1,border:"none",background:"transparent",fontSize:"13px",color:done?C.muted:txt?C.text:C.muted,fontFamily:"Georgia,serif",outline:"none",textDecoration:done?"line-through":"none"}}/>
-                      <select onChange={e=>{if(e.target.value){const item={id:`moved_${Date.now()}`,text:txt,done:false,subs:[]};setMissionTodos(prev=>prev.map(c=>c.id!==e.target.value?c:{...c,items:[...c.items,item]}));setPri(priorities.filter((_,idx)=>idx!==i));e.target.value="";}}} style={{fontSize:"10px",color:C.muted,border:`1px solid ${C.dusty}`,borderRadius:"6px",background:"white",cursor:"pointer",padding:"2px 4px"}} defaultValue="">
-                        <option value="">↓ move</option>
-                        {missionTodos.map(c=><option key={c.id} value={c.id}>{c.label}</option>)}
-                      </select>
-                      <button onClick={()=>setPri(priorities.filter((_,idx)=>idx!==i))} style={{background:"transparent",border:"none",color:C.muted,fontSize:"15px",cursor:"pointer"}}>×</button>
+                      <input value={p} placeholder={`Priority ${i+1}…`} onChange={e=>{const n=[...priorities];n[i]=e.target.value;setPri(n);}} style={{flex:1,border:"none",background:"transparent",fontSize:"13px",color:p?C.text:C.muted,fontFamily:"Georgia,serif",outline:"none"}}/>
+                      <button onClick={()=>setPri(priorities.filter((_,idx)=>idx!==i))} style={{background:"transparent",border:"none",color:C.muted,fontSize:"15px",cursor:"pointer",opacity:priorities.length===1?0.2:1}}>×</button>
                     </div>
-                  );})}
+                  ))}
                 </div>
                 <button onClick={()=>setPri(p=>[...p,""])} style={{marginTop:"10px",width:"100%",padding:"7px",borderRadius:"10px",border:`1px dashed ${C.rose}`,background:"transparent",color:C.rose,fontSize:"12px",cursor:"pointer",fontFamily:"Georgia,serif"}}>+ Add</button>
               </div>
@@ -506,16 +489,13 @@ export default function App(){
                 <p style={{margin:"0 0 12px",fontSize:"11px",color:C.muted,fontStyle:"italic"}}>Running capture — everything</p>
                 <div style={{display:"flex",flexDirection:"column",gap:"7px",maxHeight:"220px",overflowY:"auto"}}>
                   {(masterList||[]).map((p,i)=>(
-                    <div key={i} style={{display:"flex",alignItems:"center",gap:"8px",padding:"7px 10px",borderRadius:"10px",background:p.done?"rgba(0,0,0,0.03)":"rgba(255,255,255,0.6)",border:`1px solid ${p.done?C.taupe:C.dusty}`}}>
-                      <div onClick={()=>{const n=[...masterList];n[i]={...n[i],done:!n[i].done};setMasterList(n);}} style={{width:"16px",height:"16px",borderRadius:"50%",flexShrink:0,border:`2px solid ${p.done?C.gold:C.taupe}`,background:p.done?C.gold:"transparent",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>
-                        {p.done&&<span style={{color:"white",fontSize:"9px"}}>✓</span>}
-                      </div>
-                      <input value={p.text||""} placeholder="Add item…" onChange={e=>{const n=[...masterList];n[i]={...n[i],text:e.target.value};setMasterList(n);}} style={{flex:1,border:"none",background:"transparent",fontSize:"13px",color:p.done?C.muted:(p.text?C.text:C.muted),fontFamily:"Georgia,serif",outline:"none",textDecoration:p.done?"line-through":"none"}}/>
+                    <div key={i} style={{display:"flex",alignItems:"center",gap:"8px",padding:"7px 10px",borderRadius:"10px",background:"rgba(255,255,255,0.6)",border:`1px solid ${C.dusty}`}}>
+                      <input value={p} placeholder="Add item…" onChange={e=>{const n=[...masterList];n[i]=e.target.value;setMasterList(n);}} style={{flex:1,border:"none",background:"transparent",fontSize:"13px",color:p?C.text:C.muted,fontFamily:"Georgia,serif",outline:"none"}}/>
                       <button onClick={()=>setMasterList(masterList.filter((_,idx)=>idx!==i))} style={{background:"transparent",border:"none",color:C.muted,fontSize:"15px",cursor:"pointer"}}>×</button>
                     </div>
                   ))}
                 </div>
-                <button onClick={()=>setMasterList(p=>[...p,{text:"",done:false}])} style={{marginTop:"10px",width:"100%",padding:"7px",borderRadius:"10px",border:`1px dashed ${C.gold}`,background:"transparent",color:C.gold,fontSize:"12px",cursor:"pointer",fontFamily:"Georgia,serif"}}>+ Add</button>
+                <button onClick={()=>setMasterList(p=>[...p,""])} style={{marginTop:"10px",width:"100%",padding:"7px",borderRadius:"10px",border:`1px dashed ${C.gold}`,background:"transparent",color:C.gold,fontSize:"12px",cursor:"pointer",fontFamily:"Georgia,serif"}}>+ Add</button>
               </div>
             </div>
             <div>
