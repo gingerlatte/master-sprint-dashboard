@@ -452,14 +452,20 @@ export default function App(){
                 <div style={{fontSize:"11px",letterSpacing:"2px",textTransform:"uppercase",color:C.deep,marginBottom:"5px"}}>🔴 Today</div>
                 <p style={{margin:"0 0 12px",fontSize:"11px",color:C.muted,fontStyle:"italic"}}>What I'm doing right now</p>
                 <div style={{display:"flex",flexDirection:"column",gap:"7px"}}>
-                  {(todayList||[]).map((p,i)=>(
-                    <div key={i} style={{display:"flex",alignItems:"center",gap:"8px",padding:"7px 10px",borderRadius:"10px",background:"rgba(255,255,255,0.6)",border:`1px solid ${C.dusty}`}}>
-                      <input value={p} placeholder={`Today ${i+1}…`} onChange={e=>{const n=[...todayList];n[i]=e.target.value;setTodayList(n);}} style={{flex:1,border:"none",background:"transparent",fontSize:"13px",color:p?C.text:C.muted,fontFamily:"Georgia,serif",outline:"none"}}/>
-                      <button onClick={()=>setTodayList(todayList.filter((_,idx)=>idx!==i))} style={{background:"transparent",border:"none",color:C.muted,fontSize:"15px",cursor:"pointer",opacity:todayList.length===1?0.2:1}}>×</button>
+                  {(todayList||[]).map((p,i)=>{
+                    const txt=typeof p==="object"?p.text:p;
+                    const done=typeof p==="object"?p.done:false;
+                    return(
+                    <div key={i} style={{display:"flex",alignItems:"center",gap:"8px",padding:"7px 10px",borderRadius:"10px",background:done?"rgba(0,0,0,0.03)":"rgba(255,255,255,0.6)",border:`1px solid ${done?C.taupe:C.dusty}`}}>
+                      <div onClick={()=>{const n=[...todayList];n[i]={text:txt,done:!done};setTodayList(n);}} style={{width:"16px",height:"16px",borderRadius:"50%",flexShrink:0,border:`2px solid ${done?C.deep:C.taupe}`,background:done?C.deep:"transparent",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>
+                        {done&&<span style={{color:"white",fontSize:"9px"}}>✓</span>}
+                      </div>
+                      <input value={txt} placeholder="Today item…" onChange={e=>{const n=[...todayList];n[i]={text:e.target.value,done};setTodayList(n);}} style={{flex:1,border:"none",background:"transparent",fontSize:"13px",color:done?C.muted:txt?C.text:C.muted,fontFamily:"Georgia,serif",outline:"none",textDecoration:done?"line-through":"none"}}/>
+                      <button onClick={()=>setTodayList(todayList.filter((_,idx)=>idx!==i))} style={{background:"transparent",border:"none",color:C.muted,fontSize:"15px",cursor:"pointer"}}>×</button>
                     </div>
-                  ))}
+                  );})}
                 </div>
-                <button onClick={()=>setTodayList(p=>[...p,""])} style={{marginTop:"10px",width:"100%",padding:"7px",borderRadius:"10px",border:`1px dashed ${C.deep}`,background:"transparent",color:C.deep,fontSize:"12px",cursor:"pointer",fontFamily:"Georgia,serif"}}>+ Add</button>
+                <button onClick={()=>setTodayList(p=>[...p,{text:"",done:false}])} style={{marginTop:"10px",width:"100%",padding:"7px",borderRadius:"10px",border:`1px dashed ${C.deep}`,background:"transparent",color:C.deep,fontSize:"12px",cursor:"pointer",fontFamily:"Georgia,serif"}}>+ Add</button>
               </div>
 
               {/* THIS WEEK */}
@@ -475,7 +481,10 @@ export default function App(){
                       onDragEnd={()=>{setPriDrag(null);setPriDragOver(null);}}
                       style={{display:"flex",alignItems:"center",gap:"8px",padding:"7px 10px",borderRadius:"10px",background:priDragOver===i?`${C.blush}30`:"rgba(255,255,255,0.6)",border:`1px solid ${priDragOver===i?C.rose:C.dusty}`}}>
                       <span style={{color:C.muted,fontSize:"14px",cursor:"grab"}}>⠿</span>
-                      <input value={p} placeholder={`Priority ${i+1}…`} onChange={e=>{const n=[...priorities];n[i]=e.target.value;setPri(n);}} style={{flex:1,border:"none",background:"transparent",fontSize:"13px",color:p?C.text:C.muted,fontFamily:"Georgia,serif",outline:"none"}}/>
+                      <div onClick={()=>{const n=[...priorities];const txt=typeof n[i]==="object"?n[i].text:n[i];const done=typeof n[i]==="object"?n[i].done:false;n[i]={text:txt,done:!done};setPri(n);}} style={{width:"16px",height:"16px",borderRadius:"50%",flexShrink:0,border:`2px solid ${(typeof p==="object"?p.done:false)?C.rose:C.taupe}`,background:(typeof p==="object"?p.done:false)?C.rose:"transparent",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>
+                        {(typeof p==="object"?p.done:false)&&<span style={{color:"white",fontSize:"9px"}}>✓</span>}
+                      </div>
+                      <input value={typeof p==="object"?p.text:p} placeholder={`Priority ${i+1}…`} onChange={e=>{const n=[...priorities];const done=typeof n[i]==="object"?n[i].done:false;n[i]={text:e.target.value,done};setPri(n);}} style={{flex:1,border:"none",background:"transparent",fontSize:"13px",color:(typeof p==="object"?p.done:false)?C.muted:(typeof p==="object"?p.text:p)?C.text:C.muted,fontFamily:"Georgia,serif",outline:"none",textDecoration:(typeof p==="object"?p.done:false)?"line-through":"none"}}/>
                       <button onClick={()=>setPri(priorities.filter((_,idx)=>idx!==i))} style={{background:"transparent",border:"none",color:C.muted,fontSize:"15px",cursor:"pointer",opacity:priorities.length===1?0.2:1}}>×</button>
                     </div>
                   ))}
@@ -488,14 +497,20 @@ export default function App(){
                 <div style={{fontSize:"11px",letterSpacing:"2px",textTransform:"uppercase",color:C.gold,marginBottom:"5px"}}>📋 Master List</div>
                 <p style={{margin:"0 0 12px",fontSize:"11px",color:C.muted,fontStyle:"italic"}}>Running capture — everything</p>
                 <div style={{display:"flex",flexDirection:"column",gap:"7px",maxHeight:"220px",overflowY:"auto"}}>
-                  {(masterList||[]).map((p,i)=>(
-                    <div key={i} style={{display:"flex",alignItems:"center",gap:"8px",padding:"7px 10px",borderRadius:"10px",background:"rgba(255,255,255,0.6)",border:`1px solid ${C.dusty}`}}>
-                      <input value={p} placeholder="Add item…" onChange={e=>{const n=[...masterList];n[i]=e.target.value;setMasterList(n);}} style={{flex:1,border:"none",background:"transparent",fontSize:"13px",color:p?C.text:C.muted,fontFamily:"Georgia,serif",outline:"none"}}/>
+                  {(masterList||[]).map((p,i)=>{
+                    const txt=typeof p==="object"?p.text:p;
+                    const done=typeof p==="object"?p.done:false;
+                    return(
+                    <div key={i} style={{display:"flex",alignItems:"center",gap:"8px",padding:"7px 10px",borderRadius:"10px",background:done?"rgba(0,0,0,0.03)":"rgba(255,255,255,0.6)",border:`1px solid ${done?C.taupe:C.dusty}`}}>
+                      <div onClick={()=>{const n=[...masterList];n[i]={text:txt,done:!done};setMasterList(n);}} style={{width:"16px",height:"16px",borderRadius:"50%",flexShrink:0,border:`2px solid ${done?C.gold:C.taupe}`,background:done?C.gold:"transparent",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>
+                        {done&&<span style={{color:"white",fontSize:"9px"}}>✓</span>}
+                      </div>
+                      <input value={txt} placeholder="Add item…" onChange={e=>{const n=[...masterList];n[i]={text:e.target.value,done};setMasterList(n);}} style={{flex:1,border:"none",background:"transparent",fontSize:"13px",color:done?C.muted:txt?C.text:C.muted,fontFamily:"Georgia,serif",outline:"none",textDecoration:done?"line-through":"none"}}/>
                       <button onClick={()=>setMasterList(masterList.filter((_,idx)=>idx!==i))} style={{background:"transparent",border:"none",color:C.muted,fontSize:"15px",cursor:"pointer"}}>×</button>
                     </div>
-                  ))}
+                  );})}
                 </div>
-                <button onClick={()=>setMasterList(p=>[...p,""])} style={{marginTop:"10px",width:"100%",padding:"7px",borderRadius:"10px",border:`1px dashed ${C.gold}`,background:"transparent",color:C.gold,fontSize:"12px",cursor:"pointer",fontFamily:"Georgia,serif"}}>+ Add</button>
+                <button onClick={()=>setMasterList(p=>[...p,{text:"",done:false}])} style={{marginTop:"10px",width:"100%",padding:"7px",borderRadius:"10px",border:`1px dashed ${C.gold}`,background:"transparent",color:C.gold,fontSize:"12px",cursor:"pointer",fontFamily:"Georgia,serif"}}>+ Add</button>
               </div>
             </div>
             <div>
