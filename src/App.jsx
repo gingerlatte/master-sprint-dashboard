@@ -25,6 +25,18 @@ const SUBJECTS=[
 // ── STAGED LAUNCH DATA ────────────────────────────────────────────────────────
 const STAGES=[
   {
+    id:"s0", num:0, label:"Admissions", sublabel:"Immediate — clear this fast",
+    icon:"🎓", color:"#A8C0D4", accent:"#6A94B0",
+    note:"Low friction wins. Knock this out so it stops hovering over you.",
+    items:[
+      {id:"s0a",text:"Request all transcripts",done:false,subs:["Counseling Psych program","Forensic Psych program","Undergrad if required","Send directly to Herzing"]},
+      {id:"s0b",text:"Test out — Statistics (MA 320)",done:false,subs:["StraighterLine","Pattern recognize + pass","Open book = speed not mastery"]},
+      {id:"s0c",text:"Test out — A&P I (SC 154)",done:false,subs:["StraighterLine","Pattern recognize + pass"]},
+      {id:"s0d",text:"Test out — Microbiology (SC 166)",done:false,subs:["StraighterLine","Pattern recognize + pass"]},
+      {id:"s0e",text:"Test out — Chemistry (SC 186)",done:false,subs:["StraighterLine","Pattern recognize + pass"]},
+    ]
+  },
+  {
     id:"s1", num:1, label:"Foundation", sublabel:"Legal & Structural Setup",
     icon:"🏛", color:C.sage, accent:C.sageD,
     note:"You can't operate without this layer. Get it locked first.",
@@ -89,13 +101,6 @@ const STAGES=[
 ];
 
 const MISSION_CATS=[
-  {id:"practice",label:"Private Practice",icon:"⚕",color:C.rose,items:[
-    {id:"mc1",text:"NP job posting live",done:false,subs:["Draft posting copy","Post on Indeed & PMHNP job boards","Share in PMHNP Facebook groups"]},
-    {id:"mc2",text:"IC Agreement & legal docs done",done:false,subs:["Operating agreement updated","IC Agreement drafted & reviewed","Entity name change filed"]},
-    {id:"mc3",text:"First NP hired",done:false,subs:["Pipeline: 3 prospects identified","Interviews complete","Offer extended & accepted"]},
-    {id:"mc4",text:"Speak with 3 established PMHNPs",done:false,subs:["Book call #1","Book call #2","Book call #3"]},
-    {id:"mc5",text:"Referral network activated",done:false,subs:["PCPs contacted","OB/GYN outreach","Therapists who don't prescribe"]},
-  ]},
   {id:"health",label:"Health & Wellness",icon:"◯",color:C.sage,items:[
     {id:"mh1",text:"Movement 3x per week",done:false,subs:["Schedule workout blocks","Choose modality (walks, gym, yoga)","Track consistency"]},
     {id:"mh2",text:"Morning routine locked in",done:false,subs:["Set consistent wake time","5-min intention practice","No phone first 30 min"]},
@@ -111,6 +116,29 @@ const MISSION_CATS=[
     {id:"ml1",text:"April content published",done:false,subs:["2 carousels posted","Email to Inner Circle","ManyChat sequence active"]},
     {id:"ml2",text:"Inner Circle retention",done:false,subs:["Check churn rate","Plan May value drop","Engagement post this week"]},
     {id:"ml3",text:"Lead magnet updated",done:false,subs:["Review opt-in performance","Update copy if needed","Test delivery sequence"]},
+  ]},
+  {id:"np_admin",label:"Private Practice Admin",icon:"📋",color:C.sky,items:[
+    {id:"np1",text:"Call WV about endorsement application",done:false,subs:["Have application # ready","Ask about timeline"]},
+    {id:"np2",text:"Send Laura Vermont colleague recommendation info",done:false,subs:[]},
+    {id:"np3",text:"Follow up Maine application",done:false,subs:[]},
+    {id:"np4",text:"Renew malpractice insurance",done:false,subs:[]},
+    {id:"np5",text:"Jury duty paperwork",done:false,subs:[]},
+  ]},
+  {id:"financial",label:"Financial",icon:"◈",color:C.gold,items:[
+    {id:"mfi1",text:"Q2 revenue goal documented",done:false,subs:["Current therapy income baseline","Projected NP revenue addition","Target monthly by June 30"]},
+    {id:"mfi2",text:"Cancel LMAW subscription",done:false,subs:[]},
+    {id:"mfi3",text:"Transfer Headway bonus",done:false,subs:[]},
+    {id:"mfi4",text:"Switch GT to USAA",done:false,subs:[]},
+    {id:"mfi5",text:"Send Xendoo statements",done:false,subs:[]},
+    {id:"mfi6",text:"Check annual payments — delete unnecessary",done:false,subs:[]},
+    {id:"mfi7",text:"Terminate services",done:false,subs:["Gusto","Xendoo","Red River conjurer","Canva","Thrive","Uncanny"]},
+  ]},
+  {id:"personal",label:"Personal",icon:"🐾",color:C.mauve,items:[
+    {id:"mp1",text:"Order contact lenses",done:false,subs:[]},
+    {id:"mp2",text:"Juna — flea & heartworm meds",done:false,subs:[]},
+    {id:"mp3",text:"Order Bogey",done:false,subs:[]},
+    {id:"mp4",text:"Slatmill",done:false,subs:[]},
+    {id:"mp5",text:"Car maintenance",done:false,subs:["Tires","Brakes","Turbo valve","Wheel alignment"]},
   ]},
 ];
 
@@ -631,162 +659,126 @@ export default function App(){
           </div>
         )}
 
-        {/* ═══ PRACTICE LAUNCH — STAGED VIEW ═══ */}
+                {/* ═══ PRACTICE LAUNCH — HORIZONTAL TABLE ═══ */}
         {tab==="launch"&&(
           <div style={{display:"flex",flexDirection:"column",gap:"20px"}}>
 
-            {/* overall banner */}
+            {/* banner */}
             <div style={{background:`linear-gradient(135deg,${C.deep},${C.mauve})`,borderRadius:"20px",padding:"22px 28px",boxShadow:`0 8px 32px ${C.rose}30`,display:"flex",alignItems:"center",gap:"24px",flexWrap:"wrap"}}>
               <div>
-                <div style={{fontSize:"10px",color:"rgba(255,255,255,0.65)",letterSpacing:"2px",textTransform:"uppercase",marginBottom:"4px"}}>Overall Launch Progress</div>
-                <div style={{fontSize:"40px",fontWeight:"300",color:"white",lineHeight:1}}>{opct}<span style={{fontSize:"20px"}}>%</span></div>
+                <div style={{fontSize:"10px",color:"rgba(255,255,255,0.65)",letterSpacing:"2px",textTransform:"uppercase",marginBottom:"4px"}}>Practice Launch</div>
+                <div style={{fontSize:"40px",fontWeight:"300",color:"white",lineHeight:1}}>{overallPct()}<span style={{fontSize:"20px"}}>%</span></div>
               </div>
               <div style={{flex:1,minWidth:"200px"}}>
                 <div style={{height:"7px",background:"rgba(255,255,255,0.2)",borderRadius:"100px",marginBottom:"8px"}}>
-                  <div style={{height:"100%",width:`${opct}%`,background:"white",borderRadius:"100px",transition:"width 0.6s ease",boxShadow:"0 0 10px rgba(255,255,255,0.5)"}}/>
+                  <div style={{height:"100%",width:`${overallPct()}%`,background:"white",borderRadius:"100px",transition:"width 0.6s ease"}}/>
                 </div>
-                <div style={{display:"flex",gap:"8px",flexWrap:"wrap"}}>
-                  {stages.map(s=>{
-                    const p=stageProgress(s);
-                    return(
-                      <div key={s.id} style={{fontSize:"10px",color:"rgba(255,255,255,0.7)"}}>
-                        S{s.num}: {p.done}/{p.total}
-                      </div>
-                    );
-                  })}
+                <div style={{display:"flex",gap:"12px",flexWrap:"wrap"}}>
+                  {stages.map(s=>{const p=stageProgress(s);return(<div key={s.id} style={{fontSize:"10px",color:"rgba(255,255,255,0.7)"}}>S{s.num}: {p.done}/{p.total}</div>);})}
                 </div>
               </div>
-              <div style={{fontSize:"11px",color:"rgba(255,255,255,0.6)",fontStyle:"italic",maxWidth:"180px",textAlign:"right",lineHeight:1.5}}>Target: operational before Sept 2026</div>
+              <div style={{fontSize:"11px",color:"rgba(255,255,255,0.6)",fontStyle:"italic"}}>Target: Sept 2026</div>
             </div>
 
-            {/* stage unlock hint */}
-            <div style={{background:`${C.goldL}35`,border:`1px solid ${C.goldL}`,borderRadius:"12px",padding:"10px 18px",fontSize:"12px",color:C.light,fontStyle:"italic",textAlign:"center"}}>
-              Each stage unlocks the next · Click a stage header to expand · Tap ＋ to add to Priority Queue
-            </div>
-
-            {/* stages */}
-            <div style={{display:"flex",flexDirection:"column",gap:"12px"}}>
-              {stages.map((stage,si)=>{
-                const prog=stageProgress(stage);
-                const isOpen=expandedStage===stage.id;
-                const color=stage.color;
-                const allDone=prog.done===prog.total;
-                return(
-                  <div key={stage.id} style={{borderRadius:"18px",overflow:"hidden",border:`1px solid ${color}${allDone?"80":"35"}`,boxShadow:`0 4px 20px ${color}15`,transition:"all 0.2s"}}>
-
-                    {/* stage header */}
-                    <div onClick={()=>setExpandedStage(isOpen?null:stage.id)} style={{
-                      background:allDone?`linear-gradient(135deg,${color}25,${color}15)`:`linear-gradient(135deg,white,${color}08)`,
-                      padding:"18px 22px",cursor:"pointer",
-                      display:"flex",alignItems:"center",gap:"16px",
-                    }}>
-                      <div style={{
-                        width:"40px",height:"40px",borderRadius:"50%",flexShrink:0,
-                        background:`conic-gradient(${color} ${prog.pct*3.6}deg,${color}20 0deg)`,
-                        display:"flex",alignItems:"center",justifyContent:"center",
-                        boxShadow:`0 0 0 3px white,0 0 0 4px ${color}30`,
-                      }}>
-                        <div style={{width:"28px",height:"28px",borderRadius:"50%",background:"white",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"10px",fontWeight:"700",color}}>{prog.pct}%</div>
-                      </div>
-                      <div style={{flex:1}}>
-                        <div style={{display:"flex",alignItems:"center",gap:"8px",marginBottom:"3px"}}>
-                          <span style={{fontSize:"11px",letterSpacing:"2px",textTransform:"uppercase",color,fontWeight:"700"}}>Stage {stage.num}</span>
-                          <span style={{fontSize:"10px",padding:"1px 8px",borderRadius:"100px",background:`${color}20`,color,border:`1px solid ${color}30`}}>{prog.done}/{prog.total}</span>
-                          {allDone&&<span style={{fontSize:"10px",color:C.sageD,background:`${C.sage}25`,border:`1px solid ${C.sage}`,borderRadius:"100px",padding:"1px 8px"}}>✓ Complete</span>}
-                        </div>
-                        <div style={{fontSize:"16px",fontWeight:"500",color:C.text,marginBottom:"2px"}}>{stage.icon} {stage.label}</div>
-                        <div style={{fontSize:"11px",color:C.muted,fontStyle:"italic"}}>{stage.sublabel}</div>
-                      </div>
-                      <div style={{fontSize:"18px",color,transition:"transform 0.2s",transform:isOpen?"rotate(180deg)":"rotate(0deg)"}}>▾</div>
-                    </div>
-
-                    {/* stage body */}
-                    {isOpen&&(
-                      <div style={{background:"rgba(255,255,255,0.6)",padding:"0 22px 20px"}}>
-                        {/* note */}
-                        <div style={{padding:"12px 14px",margin:"16px 0 14px",background:`${color}12`,borderRadius:"10px",border:`1px solid ${color}25`,fontSize:"12px",color:stage.accent||color,fontStyle:"italic",lineHeight:1.6}}>
-                          💡 {stage.note}
-                        </div>
-                        {/* items */}
-                        <div style={{display:"flex",flexDirection:"column",gap:"8px"}}>
-                          {stage.items.map(item=>{
-                            const itemKey=`${stage.id}-${item.id}`;
-                            const itemOpen=expandedItem===itemKey;
-                            const subsArr=item.subs||[];
-                            const subsDone=subsArr.filter(s=>typeof s==="object"&&s.done).length;
-                            return(
-                              <div key={item.id} style={{borderRadius:"12px",overflow:"hidden",border:`1px solid ${item.done?color+"40":C.dusty}`,background:item.done?`${color}10`:"rgba(255,255,255,0.7)"}}>
-                                <div style={{display:"flex",alignItems:"flex-start",gap:"10px",padding:"11px 14px"}}>
-                                  <div onClick={()=>toggleStageItem(stage.id,item.id)} style={{width:"18px",height:"18px",borderRadius:"50%",flexShrink:0,marginTop:"2px",border:`2px solid ${item.done?color:C.taupe}`,background:item.done?color:"transparent",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>
-                                    {item.done&&<span style={{color:"white",fontSize:"10px"}}>✓</span>}
+            {/* horizontal table */}
+            <div style={{overflowX:"auto"}}>
+              <table style={{width:"100%",borderCollapse:"collapse",minWidth:`${stages.length*220}px`}}>
+                <thead>
+                  <tr>
+                    {stages.map(stage=>{
+                      const prog=stageProgress(stage);
+                      const color=stage.color;
+                      return(
+                        <th key={stage.id} style={{padding:"14px 16px",textAlign:"left",background:`linear-gradient(135deg,${color}25,${color}10)`,border:`1px solid ${color}40`,borderRadius:"8px 8px 0 0",minWidth:"200px",verticalAlign:"top"}}>
+                          <div style={{display:"flex",alignItems:"center",gap:"8px",marginBottom:"6px"}}>
+                            <div style={{width:"32px",height:"32px",borderRadius:"50%",background:`conic-gradient(${color} ${prog.pct*3.6}deg,${color}20 0deg)`,display:"flex",alignItems:"center",justifyContent:"center",boxShadow:`0 0 0 2px white,0 0 0 3px ${color}30`,flexShrink:0}}>
+                              <div style={{width:"22px",height:"22px",borderRadius:"50%",background:"white",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"9px",fontWeight:"700",color}}>{prog.pct}%</div>
+                            </div>
+                            <div>
+                              <div style={{fontSize:"10px",letterSpacing:"1px",textTransform:"uppercase",color,fontWeight:"700"}}>Stage {stage.num}</div>
+                              <div style={{fontSize:"13px",fontWeight:"600",color:C.text}}>{stage.icon} {stage.label}</div>
+                            </div>
+                          </div>
+                          <div style={{fontSize:"10px",color:C.muted,fontStyle:"italic"}}>{stage.sublabel}</div>
+                          <div style={{fontSize:"10px",color:stage.accent||color,marginTop:"6px",lineHeight:1.4,fontStyle:"italic"}}>💡 {stage.note}</div>
+                        </th>
+                      );
+                    })}
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    {stages.map(stage=>{
+                      const color=stage.color;
+                      return(
+                        <td key={stage.id} style={{padding:"12px",verticalAlign:"top",background:"rgba(255,255,255,0.6)",border:`1px solid ${color}25`}}>
+                          <div style={{display:"flex",flexDirection:"column",gap:"6px"}}>
+                            {stage.items.map(item=>{
+                              const itemKey=`${stage.id}-${item.id}`;
+                              const itemOpen=expandedItem===itemKey;
+                              const subsArr=item.subs||[];
+                              const subsDone=subsArr.filter(s=>typeof s==="object"&&s.done).length;
+                              return(
+                                <div key={item.id} style={{borderRadius:"10px",border:`1px solid ${item.done?color+"50":C.dusty}`,background:item.done?`${color}12`:"white",overflow:"hidden"}}>
+                                  <div style={{display:"flex",alignItems:"flex-start",gap:"8px",padding:"8px 10px"}}>
+                                    <div onClick={()=>toggleStageItem(stage.id,item.id)} style={{width:"16px",height:"16px",borderRadius:"50%",flexShrink:0,marginTop:"2px",border:`2px solid ${item.done?color:C.taupe}`,background:item.done?color:"transparent",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>
+                                      {item.done&&<span style={{color:"white",fontSize:"9px"}}>✓</span>}
+                                    </div>
+                                    <div style={{flex:1}}>
+                                      <div style={{fontSize:"12px",color:item.done?C.muted:C.text,textDecoration:item.done?"line-through":"none",lineHeight:1.4}}>{item.text}</div>
+                                      {subsArr.length>0&&<div style={{fontSize:"10px",color:C.muted,marginTop:"2px"}}>{subsDone}/{subsArr.length} steps</div>}
+                                    </div>
+                                    <div style={{display:"flex",gap:"4px",flexShrink:0}}>
+                                      {!item.done&&<button onClick={()=>addToPriority(item,color)} style={{width:"16px",height:"16px",borderRadius:"50%",border:`1px solid ${color}`,background:"transparent",color,fontSize:"12px",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",opacity:priorityList.find(p=>p.id===item.id)?0.3:1}}>＋</button>}
+                                      {subsArr.length>0&&<button onClick={()=>setExpandedItem(itemOpen?null:itemKey)} style={{background:"transparent",border:"none",cursor:"pointer",color,fontSize:"12px",padding:0}}>{itemOpen?"▴":"▾"}</button>}
+                                    </div>
                                   </div>
-                                  <div style={{flex:1}}>
-                                    <div style={{fontSize:"13px",color:item.done?C.muted:C.text,textDecoration:item.done?"line-through":"none",lineHeight:1.4,marginBottom:"2px"}}>{item.text}</div>
-                                    {subsArr.length>0&&(
-                                      <div style={{fontSize:"10px",color:C.muted}}>
-                                        {subsDone}/{subsArr.length} sub-steps complete
-                                      </div>
-                                    )}
-                                    {item.target&&<div style={{fontSize:"10px",color:C.gold,marginTop:"2px"}}>🎯 {item.target}</div>}
-                                  </div>
-                                  <div style={{display:"flex",gap:"6px",alignItems:"center",flexShrink:0}}>
-                                    {!item.done&&(
-                                      <button onClick={()=>addToPriority(item,color)} style={{width:"20px",height:"20px",borderRadius:"50%",border:`1px solid ${color}`,background:"transparent",color,fontSize:"14px",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",opacity:priorityList.find(p=>p.id===item.id)?0.3:1}}>＋</button>
-                                    )}
-                                    {subsArr.length>0&&(
-                                      <button onClick={()=>setExpandedItem(itemOpen?null:itemKey)} style={{background:"transparent",border:"none",cursor:"pointer",color,fontSize:"14px",padding:"0 2px"}}>{itemOpen?"▴":"▾"}</button>
-                                    )}
-                                  </div>
-                                </div>
-                                {/* sub-steps */}
-                                {itemOpen&&(
-                                  <div style={{borderTop:`1px solid ${color}20`,padding:"8px 14px 12px 42px",background:`${color}06`}}>
-                                    {subsArr.map((sub,si2)=>{
-                                      const isDone=typeof sub==="object"?sub.done:false;
-                                      const label=typeof sub==="object"?sub.text:sub;
-                                      return(
-                                        <div key={si2} style={{display:"flex",alignItems:"center",gap:"8px",padding:"4px 0"}}>
-                                          <div onClick={()=>toggleStageSub(stage.id,item.id,si2)} style={{width:"12px",height:"12px",borderRadius:"50%",flexShrink:0,border:`1.5px solid ${isDone?color:C.taupe}`,background:isDone?color:"transparent",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>
-                                            {isDone&&<span style={{color:"white",fontSize:"7px"}}>✓</span>}
+                                  {itemOpen&&(
+                                    <div style={{borderTop:`1px solid ${color}20`,padding:"6px 10px 8px 34px",background:`${color}06`}}>
+                                      {subsArr.map((sub,si)=>{
+                                        const isDone=typeof sub==="object"?sub.done:false;
+                                        const label=typeof sub==="object"?sub.text:sub;
+                                        return(
+                                          <div key={si} style={{display:"flex",alignItems:"center",gap:"6px",padding:"3px 0"}}>
+                                            <div onClick={()=>toggleStageSub(stage.id,item.id,si)} style={{width:"10px",height:"10px",borderRadius:"50%",flexShrink:0,border:`1.5px solid ${isDone?color:C.taupe}`,background:isDone?color:"transparent",cursor:"pointer"}}>
+                                            </div>
+                                            <input value={label} onChange={e=>editStageSub(stage.id,item.id,si,e.target.value)} style={{flex:1,border:"none",background:"transparent",fontSize:"11px",color:isDone?C.muted:C.light,fontFamily:"Georgia,serif",outline:"none",padding:"1px 0",textDecoration:isDone?"line-through":"none"}}/>
                                           </div>
-                                          <input value={label} onChange={e=>editStageSub(stage.id,item.id,si2,e.target.value)} style={{flex:1,border:"none",background:"transparent",fontSize:"12px",color:isDone?C.muted:C.light,fontFamily:"Georgia,serif",outline:"none",padding:"2px 0",textDecoration:isDone?"line-through":"none"}}/>
-                                        </div>
-                                      );
-                                    })}
-                                  </div>
-                                )}
-                              </div>
-                            );
-                          })}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
+                                        );
+                                      })}
+                                    </div>
+                                  )}
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </td>
+                      );
+                    })}
+                  </tr>
+                </tbody>
+              </table>
             </div>
 
             {/* priority queue */}
-            <div style={{...card,border:`1px solid ${C.goldL}`,marginTop:"8px"}}>
+            <div style={{...card,border:`1px solid ${C.goldL}`}}>
               <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:"14px"}}>
                 <div><div style={{fontSize:"11px",letterSpacing:"2px",textTransform:"uppercase",color:C.gold,marginBottom:"3px"}}>◈ Priority Queue</div><h3 style={{margin:0,fontSize:"17px",fontWeight:"400",color:C.text}}>What I'm tackling next</h3></div>
                 {priorityList.length>0&&<button onClick={()=>setPriorityList([])} style={{background:"transparent",border:`1px solid ${C.dusty}`,borderRadius:"100px",padding:"4px 12px",fontSize:"10px",color:C.muted,cursor:"pointer"}}>Clear all</button>}
               </div>
               {priorityList.length===0?(
-                <div style={{textAlign:"center",padding:"28px",color:C.muted,fontStyle:"italic",fontSize:"13px",border:`1px dashed ${C.taupe}`,borderRadius:"12px"}}>Tap ＋ on any task above to build your priority queue here.<br/><span style={{fontSize:"11px"}}>Drag to reorder once added.</span></div>
+                <div style={{textAlign:"center",padding:"24px",color:C.muted,fontStyle:"italic",fontSize:"13px",border:`1px dashed ${C.taupe}`,borderRadius:"12px"}}>Tap ＋ on any task to add it here · Drag to reorder</div>
               ):(
                 <div style={{display:"flex",flexDirection:"column",gap:"8px"}}>
                   {priorityList.map((item,idx)=>{
                     const color=item.color||C.rose;
                     return(
                       <div key={item.id} draggable onDragStart={e=>handleDragStart(e,idx)} onDragOver={e=>handleDragOver(e,idx)} onDrop={e=>handleDrop(e,idx)} onDragEnd={()=>{setDragItem(null);setDragOver(null);}}
-                        style={{display:"flex",alignItems:"center",gap:"10px",padding:"11px 14px",borderRadius:"12px",cursor:"grab",background:dragOver===idx?`${color}18`:`${color}10`,border:`1px solid ${dragOver===idx?color:color+"40"}`,transition:"all 0.15s"}}>
+                        style={{display:"flex",alignItems:"center",gap:"10px",padding:"10px 14px",borderRadius:"12px",cursor:"grab",background:dragOver===idx?`${color}18`:`${color}10`,border:`1px solid ${dragOver===idx?color:color+"40"}`}}>
                         <span style={{color:C.muted,fontSize:"14px"}}>⠿</span>
-                        <div style={{width:"22px",height:"22px",borderRadius:"50%",flexShrink:0,background:color,display:"flex",alignItems:"center",justifyContent:"center",fontSize:"10px",color:"white",fontWeight:"700"}}>{idx+1}</div>
-                        <div style={{flex:1}}>
-                          <div style={{fontSize:"13px",color:C.text,lineHeight:1.35}}>{item.text}</div>
-                        </div>
-                        <button onClick={()=>removeFromPriority(item.id)} style={{background:"transparent",border:"none",color:C.muted,fontSize:"16px",cursor:"pointer",lineHeight:1,padding:"2px 6px"}}>×</button>
+                        <div style={{width:"20px",height:"20px",borderRadius:"50%",background:color,display:"flex",alignItems:"center",justifyContent:"center",fontSize:"10px",color:"white",fontWeight:"700"}}>{idx+1}</div>
+                        <div style={{flex:1,fontSize:"13px",color:C.text}}>{item.text}</div>
+                        <button onClick={()=>removeFromPriority(item.id)} style={{background:"transparent",border:"none",color:C.muted,fontSize:"16px",cursor:"pointer"}}>×</button>
                       </div>
                     );
                   })}
