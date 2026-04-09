@@ -107,12 +107,7 @@ const MISSION_CATS=[
     {id:"mh2",text:"Morning routine locked in",done:false,subs:["Set consistent wake time","5-min intention practice","No phone first 30 min"]},
     {id:"mh3",text:"Rest protected weekly",done:false,subs:["Block one screen-free evening","One joy activity per week"]},
   ]},
-  {id:"financial",label:"Financial",icon:"◈",color:C.gold,items:[
-    {id:"mfi1",text:"Q2 revenue goal documented",done:false,subs:["Current therapy income baseline","Projected NP revenue addition","Target monthly by June 30"]},
-    {id:"mfi2",text:"Practice revenue model mapped",done:false,subs:["CPT codes & rates per state","NP 60/40 revenue share","Break-even timeline"]},
-    {id:"mfi3",text:"Malpractice insurance updated",done:false,subs:["Personal policy updated","Practice-level policy secured","NP coverage requirements documented"]},
-    {id:"mfi4",text:"Business banking & accounting",done:false,subs:["Separate practice bank account","Bookkeeping system confirmed","Quarterly tax estimate"]},
-  ]},
+
   {id:"lmaw",label:"Loving Me After We",icon:"✦",color:C.mauve,items:[
     {id:"ml1",text:"April content published",done:false,subs:["2 carousels posted","Email to Inner Circle","ManyChat sequence active"]},
     {id:"ml2",text:"Inner Circle retention",done:false,subs:["Check churn rate","Plan May value drop","Engagement post this week"]},
@@ -127,12 +122,14 @@ const MISSION_CATS=[
   ]},
   {id:"financial",label:"Financial",icon:"◈",color:C.gold,items:[
     {id:"mfi1",text:"Q2 revenue goal documented",done:false,subs:["Current therapy income baseline","Projected NP revenue addition","Target monthly by June 30"]},
-    {id:"mfi2",text:"Cancel LMAW subscription",done:false,subs:[]},
-    {id:"mfi3",text:"Transfer Headway bonus",done:false,subs:[]},
-    {id:"mfi4",text:"Switch GT to USAA",done:false,subs:[]},
-    {id:"mfi5",text:"Send Xendoo statements",done:false,subs:[]},
-    {id:"mfi6",text:"Check annual payments — delete unnecessary",done:false,subs:[]},
-    {id:"mfi7",text:"Terminate services",done:false,subs:["Gusto","Xendoo","Red River conjurer","Canva","Thrive","Uncanny"]},
+    {id:"mfi2",text:"Practice revenue model mapped",done:false,subs:["CPT codes & rates per state","NP 60/40 revenue share","Break-even timeline"]},
+    {id:"mfi3",text:"Business banking & accounting",done:false,subs:["Separate practice bank account","Bookkeeping system confirmed","Quarterly tax estimate"]},
+    {id:"mfi4",text:"Cancel LMAW subscription",done:false,subs:[]},
+    {id:"mfi5",text:"Transfer Headway bonus",done:false,subs:[]},
+    {id:"mfi6",text:"Switch GT to USAA",done:false,subs:[]},
+    {id:"mfi7",text:"Send Xendoo statements",done:false,subs:[]},
+    {id:"mfi8",text:"Check annual payments — delete unnecessary",done:false,subs:[]},
+    {id:"mfi9",text:"Terminate services",done:false,subs:["Gusto","Xendoo","Red River conjurer","Canva","Thrive","Uncanny"]},
   ]},
   {id:"personal",label:"Personal",icon:"🐾",color:C.mauve,items:[
     {id:"mp1",text:"Order contact lenses",done:false,subs:[]},
