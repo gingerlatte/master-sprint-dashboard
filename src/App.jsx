@@ -512,7 +512,7 @@ export default function App(){
                       onDragEnd={()=>{setCatDragItem(null);setCatDragOver(null);}}
                       style={{minWidth:"230px",flex:"0 0 230px",borderRadius:"18px",background:`linear-gradient(160deg,white,${color}10)`,border:`2px solid ${catDragOver===catIdx?color:color+"35"}`,boxShadow:`0 4px 16px ${color}18`,padding:"18px",cursor:"grab",opacity:catDragItem===catIdx?0.5:1}}>
                       <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:"14px"}}>
-                        <div><div style={{fontSize:"16px",marginBottom:"2px"}}>{cat.icon}</div><div style={{fontSize:"12px",fontWeight:"600",color}}>{cat.label}</div></div>
+                        <div><div style={{fontSize:"16px",marginBottom:"2px"}}>{cat.icon}</div><input value={cat.label} onChange={e=>setMissionTodos(p=>p.map(c=>c.id!==cat.id?c:{...c,label:e.target.value}))} style={{fontSize:"12px",fontWeight:"600",color,border:"none",background:"transparent",fontFamily:"Georgia,serif",outline:"none",width:"100%"}}/></div>
                         <div style={{width:"34px",height:"34px",borderRadius:"50%",background:`conic-gradient(${color} ${(catDone/Math.max(cat.items.length,1))*360}deg,${color}20 0deg)`,display:"flex",alignItems:"center",justifyContent:"center",boxShadow:"0 0 0 2px white"}}>
                           <div style={{width:"24px",height:"24px",borderRadius:"50%",background:"white",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"9px",fontWeight:"700",color}}>{catDone}/{cat.items.length}</div>
                         </div>
@@ -728,11 +728,11 @@ export default function App(){
                             </div>
                             <div>
                               <div style={{fontSize:"10px",letterSpacing:"1px",textTransform:"uppercase",color,fontWeight:"700"}}>Stage {stage.num}</div>
-                              <div style={{fontSize:"13px",fontWeight:"600",color:C.text}}>{stage.icon} {stage.label}</div>
+                              <div style={{display:"flex",alignItems:"center",gap:"4px"}}><span>{stage.icon}</span><input value={stage.label} onChange={e=>setStages(p=>p.map(s=>s.id!==stage.id?s:{...s,label:e.target.value}))} style={{fontSize:"13px",fontWeight:"600",color:C.text,border:"none",background:"transparent",fontFamily:"Georgia,serif",outline:"none",flex:1}}/></div>
                             </div>
                           </div>
-                          <div style={{fontSize:"10px",color:C.muted,fontStyle:"italic"}}>{stage.sublabel}</div>
-                          <div style={{fontSize:"10px",color:stage.accent||color,marginTop:"6px",lineHeight:1.4,fontStyle:"italic"}}>💡 {stage.note}</div>
+                          <input value={stage.sublabel} onChange={e=>setStages(p=>p.map(s=>s.id!==stage.id?s:{...s,sublabel:e.target.value}))} style={{fontSize:"10px",color:C.muted,fontStyle:"italic",border:"none",background:"transparent",fontFamily:"Georgia,serif",outline:"none",width:"100%"}}/>
+                          <div style={{display:"flex",gap:"4px",marginTop:"6px"}}><span style={{fontSize:"10px"}}>💡</span><input value={stage.note} onChange={e=>setStages(p=>p.map(s=>s.id!==stage.id?s:{...s,note:e.target.value}))} style={{fontSize:"10px",color:stage.accent||color,fontStyle:"italic",border:"none",background:"transparent",fontFamily:"Georgia,serif",outline:"none",flex:1,lineHeight:1.4}}/></div>
                         </th>
                       );
                     })}
